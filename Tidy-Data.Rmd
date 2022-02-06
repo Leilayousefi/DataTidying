@@ -1,0 +1,66 @@
+---
+title: "Data Tidying"
+output: Tidy Dataset
+---
+
+This is an [R Markdown](http://garrettgman.github.io/tidying/) Notebook. “tidy data,” a way to organize your data that works particularly well with R. 
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Cmd+Option+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Cmd+Shift+K* to preview the HTML file). 
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+
+## Git Repo
+cd DataTidying 
+git status 
+git add . -n
+
+
+## Package Creatation
+```{r}
+
+# Loading required package: 
+install.packages("usethis")
+install.packages(c("devtools", "roxygen2", "testthat", "knitr"))
+
+library(usethis)
+library(devtools)
+library(roxygen2)
+library(testthat)
+
+# version of devtools?
+# packageVersion("devtools")
+# devtools::session_info()
+
+
+```
+
+```{r}
+getwd()
+
+devtools::create("/Users/leilayousefi/LeilaDocuments/git/MoJ/TidyData/DataTidying")
+```
+
+## tidy data
+
+This section introduces “tidy data,” a way to organize your data that works particularly well with R.
+
+```{r}
+plot(cars)
+```
+
+## making untidy data tidy
+reorganize the values in your data set with the the spread() and gather() functions of the tidyr package.
+
+```{r}
+
+```
+
+
+## split apart and combine values in your data set to make them easier to access with R
+
+```{r}
+
+```
+
+
