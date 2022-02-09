@@ -17,12 +17,16 @@ The preview shows you a rendered HTML copy of the contents of the editor. Conseq
 
 # Loading required package: 
 install.packages("usethis")
-install.packages(c("devtools", "roxygen2", "testthat", "knitr", "tidyr")
+install.packages(c("devtools", "roxygen2", "testthat", "knitr", "tidyr", "dplyr", "ggplot2"))
 
+#devtools::install_github("tidyverse/forcats")
+devtools::install_github("garrettgman/DSR",force = TRUE)
 library(usethis)
 library(devtools)
 library(roxygen2)
 library(testthat)
+library(tidyr)
+library(DSR)
 
 # version of devtools?
 # packageVersion("devtools")
@@ -36,7 +40,6 @@ getwd()
 
 devtools::create("/Users/leilayousefi/LeilaDocuments/git/MoJ/TidyData/DataTidying")
 ```
-
 
 ## Git Repo
 cd DataTidying 
@@ -55,10 +58,7 @@ This section introduces “tidy data,” a way to organize your data that works 
 
 ```{r}
 
-install.packages(c("tidyr", "devtools"))
-# install.packages("devtools")
-#devtools::install_github("tidyverse/forcats")
-devtools::install_github("garrettgman/DSR",force = TRUE)
+
 
 ```
 
@@ -101,9 +101,40 @@ library(tidyr)
 spread(table2, key, value)
 ```
 
+## R factors
+R uses factors to handle categorical variables, variables that have a fixed and known set of possible values. Factors are also helpful for reordering character vectors to improve display. The goal of the forcats package is to provide a suite of tools that solve common problems with factors, including changing the order of levels or the values. Some examples include:
+
+fct_reorder(): Reordering a factor by another variable.
+fct_infreq(): Reordering a factor by the frequency of values.
+fct_relevel(): Changing the order of a factor by hand.
+fct_lump(): Collapsing the least/most frequent values of a factor into “other”.
+You can learn more about each of these in vignette("forcats"). If you’re new to factors, the best place to start is the chapter on factors in R for Data Science.
 
 ```{r}
+library(forcats)
+library(dplyr)
+library(ggplot2)
 
+print(starwars)
+
+starwars %>% 
+  filter(!is.na(species)) %>%
+  count(species, sort = TRUE)
+
+starwars %>%
+  filter(!is.na(species)) %>%
+  mutate(species = fct_lump(species, n = 3)) %>%
+  count(species)
+
+ggplot(starwars, aes(x = eye_color)) + 
+  geom_bar() + 
+  coord_flip()
+
+starwars %>%
+  mutate(eye_color = fct_infreq(eye_color)) %>%
+  ggplot(aes(x = eye_color)) + 
+  geom_bar() + 
+  coord_flip()
 ```
 
 
