@@ -10,10 +10,6 @@ When you save the notebook, an HTML file containing the code and output will be 
 
 The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
 
-## Git Repo
-cd DataTidying 
-git status 
-git add . -n
 
 
 ## Package Creatation
@@ -21,7 +17,7 @@ git add . -n
 
 # Loading required package: 
 install.packages("usethis")
-install.packages(c("devtools", "roxygen2", "testthat", "knitr"))
+install.packages(c("devtools", "roxygen2", "testthat", "knitr", "tidyr")
 
 library(usethis)
 library(devtools)
@@ -41,26 +37,74 @@ getwd()
 devtools::create("/Users/leilayousefi/LeilaDocuments/git/MoJ/TidyData/DataTidying")
 ```
 
+
+## Git Repo
+cd DataTidying 
+git status 
+git add . -n
+git add .
+git commit -m "created package in R" 
+git status 
+git push
+
+
+
 ## tidy data
 
 This section introduces “tidy data,” a way to organize your data that works particularly well with R.
 
 ```{r}
-plot(cars)
+
+install.packages(c("tidyr", "devtools"))
+# install.packages("devtools")
+#devtools::install_github("tidyverse/forcats")
+devtools::install_github("garrettgman/DSR",force = TRUE)
+
 ```
 
 ## making untidy data tidy
 reorganize the values in your data set with the the spread() and gather() functions of the tidyr package.
 
 ```{r}
+library(DSR)
+# Data set one
+table1
+
+# Data set two
+table2
+
+# Data set three
+table3
+
+# Data set four
+table4  # cases
+
+table5  # population
+
 
 ```
 
+```{r}
+mean(table1$cases)
+table1$cases / table1$population * 10000
+```
+
+Each variable in the data set is placed in its own column
+Each observation is placed in its own row
+Each value is placed in its own cell*
 
 ## split apart and combine values in your data set to make them easier to access with R
+
+```{r}
+
+library(tidyr)
+spread(table2, key, value)
+```
+
 
 ```{r}
 
 ```
 
 
+## combining everything you’ve learned about tidyr to tidy a real data set on tuberculosis epidemiology collected by the World Health Organization.
