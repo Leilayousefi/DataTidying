@@ -52,6 +52,28 @@ git push
 
 
 
+## Create new issue in github:
+# name the issue: Add sensitive file to gitignore
+
+git status
+git branch
+git pull
+
+git branch fix/3
+git checkout fix/3
+(git checkout -b fix/3)
+
+vim sensitive.txt
+
+cmd(ctrl)+i
+secrets
+
+ESC
+:wq #(for saving the changes and file)
+:q! 
+
+
+
 ## tidy data
 
 This section introduces “tidy data,” a way to organize your data that works particularly well with R.
