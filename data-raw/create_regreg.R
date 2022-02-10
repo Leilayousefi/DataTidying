@@ -1,4 +1,6 @@
 # some code to go from raw data csv to a nice RDA object
+
+
 # create_regreg
 
 regreg <- readr::read_csv("./data-raw/register.csv")
@@ -13,7 +15,7 @@ regreg <- dplyr::rename(regreg, date = `entry-timestamp`)
 regreg <- dplyr::select(regreg, -copyright)
 
 # overwrite old data
-devtools::use_data(regreg, overwrite = TRUE)
+usethis::use_data(regreg, overwrite = TRUE)
 
 rm(regreg)
 
