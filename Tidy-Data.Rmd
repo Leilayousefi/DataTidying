@@ -248,6 +248,14 @@ devtools::document(roclets = c('rd', 'collate', 'namespace'))
 Thus, see ?regreg that
 shows Rendering development documentation for "regreg"
 
+# Making Messy Data Pretty
+# Logging When Things Go Wrong
+https://www.r-bloggers.com/2016/08/python-style-logging-in-r/
+
+https://www.r-bloggers.com/2013/03/better-logging-in-r-aka-futile-logger-1-3-0-released/
+
+http://adv-r.had.co.nz/Exceptions-Debugging.html
+
 ```{r}
 ?regreg 
 
