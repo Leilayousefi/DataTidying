@@ -68,15 +68,143 @@ vim sensitive.txt
 cmd(ctrl)+i
 secrets
 
+before and wish to exit a session without saving your changes, press Esc then type :q! and hit Enter or ↵ or on Macs, Return . If you want to save your changes and quit, press Esc then type :wq and hit Enter or ↵ or on Macs, Return .
+
 ESC
 :wq #(for saving the changes and file)
 :q! 
 
+ls -a
+git status
+git add . -n
+git add .
+git commit -m "Added sensitive file in gitignore"
+
+ls -a
+vim .gitignore
+add sensitive.txt to it 
+ESC
+:wq
+
+(or add the sensitive.txt through Rstadio)
+
+git push origin fix/3 -u
+git push
 
 
-## tidy data
+## goto github:
+compare and pull request
+Add reviewers and assignee
+after their review 
+merge
+confirm
+
+==> you cannot see sensitive.txt on the cloud github
+
+## look at https://github.com/ukgovdatascience/dotfiles for more information on sensitive files and implement it on your system for the privacy of sensitive information before get push on Github and the cloud
+Often you will work on projects with sensitive data or analyses; you need a way to prevent these files from being published on Github. Fortunately, you can do this using .gitignore as well as other advanced tools like githooks.
+
+Type git status in the command line.
+
+Now add SECRET.*  to .gitignore 
+
+Type git status  again.
+
+What happens?
+
+Questions for this assignment
+How could you use your .gitignore file to protect yourself against accidentally committing sensitive data? Do you have a boiler plate .gitignore template to use?
+
+git clone https://github.com/ukgovdatascience/dotfiles
+cd dotfiles
+
+## Copy the file into the root of a git repository and edit as approproate.
+
+## Set as .gitignore_global
+To use for ALL git repos, the template can be set globally. Note that this is likely to be very annoying in its current form, so should be edited as appropriate, otherwise trivial files are likely to be invisible to git. Even ignored files can be added with git add -f, however you need to realise that they are being ignored!
+
+cp .gitignore ~/.gitignore_global
+git config --global core.excludesfile ~/.gitignore_global
+
+## set this as the .gitignore_global, you can exclude individual repositories by running:
+
+git config --local --unset core.excludesfile
+
+## The above can be used with --global to stop using it as the global .gitignore.
+
+More information about ignoring files can be found here: https://help.github.com/articles/ignoring-files/
+
+
+pre-commit and pre-push hooks
+These hooks will check, at the point of each commit and push, that the the code does not contain any of the following:
+
+AWS keys (determined by regex)
+Private SSH keys (determined by regex)
+.pem files
+Various data formats:
+xls, xlsx, xlsm, xlst,
+csv, txt,
+sav,
+db, sqlite,
+feather, pkl, pickle,
+ods, gsheet,
+Rdata, Rds
+ipython/jupyer notebooks (ipynb)
+Install in all new repositories
+** Note that this will overwrite any prior pre-commit and pre-push hooks you may have already installed**
+
+cp -r git_template ~/.git_template
+
+git config --global init.templatedir '~/.git_template'
+
+## Install into any pre-existing repositories
+Having done the previous step, run the following to sync git hooks with the defaults in ~/.git_template:
+
+$(git config --path --get init.templatedir)/update.sh
+Install all pre-existing repositories in a directory
+The following code will cycle through all directories in a folder (assuming they are all managed by git), and install the default hooks into each of them:
+
+current=$(pwd); for i in $(ls .); do echo $i; cd $i ; $(git config --path --get init.templatedir)/update.sh; cd $current done
+
+## create a new branch for data
+create a new directory (raw-data)
+add the csv file to it
+
+git pull
+cd data-raw 
+ls -a
+
+git status
+
+git checkout -b feature/data
+ls
+
+git status
+
+cd ../
+ls
+
+
+
+
+```{r}
+devtools::check()
+regreg <- read.csv('./data-raw/register.csv', header = TRUE)
+
+#regreg <- readr::read_csv("./data-raw/register.csv")
+devtools::use_data(regreg)
+```
+
+
+
+
+
+
+## tidy data and clean it and then convert raw data to a nice R object of the minimal tidy data set.
 
 This section introduces “tidy data,” a way to organize your data that works particularly well with R.
+
+squashed your commits and pushed to Github and created a pull request for your RAP buddy to review
 
 ```{r}
 
