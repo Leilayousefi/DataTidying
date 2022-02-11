@@ -37,6 +37,7 @@ library(DSR)
 
 ```{r}
 getwd()
+setwd("~/git/MoJ/TidyData/DataTidying")
 
 devtools::create("/Users/leilayousefi/LeilaDocuments/git/MoJ/TidyData/DataTidying")
 ```
@@ -52,16 +53,438 @@ git push
 
 
 
-## tidy data
+## Create new issue in github:
+# name the issue: Add sensitive file to gitignore
+
+git status
+git branch
+git pull
+
+git branch fix/3
+git checkout fix/3
+(git checkout -b fix/3)
+
+vim sensitive.txt
+
+cmd(ctrl)+i
+secrets
+
+before and wish to exit a session without saving your changes, press Esc then type :q! and hit Enter or ↵ or on Macs, Return . If you want to save your changes and quit, press Esc then type :wq and hit Enter or ↵ or on Macs, Return .
+
+ESC
+:wq #(for saving the changes and file)
+:q! 
+
+ls -a
+git status
+git add . -n
+git add .
+git commit -m "Added sensitive file in gitignore"
+
+ls -a
+vim .gitignore
+add sensitive.txt to it 
+ESC
+:wq
+
+(or add the sensitive.txt through Rstadio)
+
+git push origin fix/3 -u
+git push
+
+
+## goto github:
+compare and pull request
+Add reviewers and assignee
+after their review 
+merge
+confirm
+
+==> you cannot see sensitive.txt on the cloud github
+
+## look at https://github.com/ukgovdatascience/dotfiles for more information on sensitive files and implement it on your system for the privacy of sensitive information before get push on Github and the cloud
+Often you will work on projects with sensitive data or analyses; you need a way to prevent these files from being published on Github. Fortunately, you can do this using .gitignore as well as other advanced tools like githooks.
+
+Type git status in the command line.
+
+Now add SECRET.*  to .gitignore 
+
+Type git status  again.
+
+What happens?
+
+Questions for this assignment
+How could you use your .gitignore file to protect yourself against accidentally committing sensitive data? Do you have a boiler plate .gitignore template to use?
+
+git clone https://github.com/ukgovdatascience/dotfiles
+cd dotfiles
+
+## Copy the file into the root of a git repository and edit as approproate.
+
+## Set as .gitignore_global
+To use for ALL git repos, the template can be set globally. Note that this is likely to be very annoying in its current form, so should be edited as appropriate, otherwise trivial files are likely to be invisible to git. Even ignored files can be added with git add -f, however you need to realise that they are being ignored!
+
+cp .gitignore ~/.gitignore_global
+git config --global core.excludesfile ~/.gitignore_global
+
+## set this as the .gitignore_global, you can exclude individual repositories by running:
+
+git config --local --unset core.excludesfile
+
+## The above can be used with --global to stop using it as the global .gitignore.
+
+More information about ignoring files can be found here: https://help.github.com/articles/ignoring-files/
+
+
+pre-commit and pre-push hooks
+These hooks will check, at the point of each commit and push, that the the code does not contain any of the following:
+
+AWS keys (determined by regex)
+Private SSH keys (determined by regex)
+.pem files
+Various data formats:
+xls, xlsx, xlsm, xlst,
+csv, txt,
+sav,
+db, sqlite,
+feather, pkl, pickle,
+ods, gsheet,
+Rdata, Rds
+ipython/jupyer notebooks (ipynb)
+Install in all new repositories
+** Note that this will overwrite any prior pre-commit and pre-push hooks you may have already installed**
+
+cp -r git_template ~/.git_template
+
+git config --global init.templatedir '~/.git_template'
+
+## Install into any pre-existing repositories
+Having done the previous step, run the following to sync git hooks with the defaults in ~/.git_template:
+
+$(git config --path --get init.templatedir)/update.sh
+Install all pre-existing repositories in a directory
+The following code will cycle through all directories in a folder (assuming they are all managed by git), and install the default hooks into each of them:
+
+current=$(pwd); for i in $(ls .); do echo $i; cd $i ; $(git config --path --get init.templatedir)/update.sh; cd $current done
+
+## ..................................##
+## Create an Object from raw data
+
+## create a new branch for data
+create a new directory (raw-data)
+add the csv file to it
+
+git pull
+cd data-raw 
+ls -a
+
+git status
+
+git checkout -b feature/data
+ls
+
+git status
+
+cd ../
+ls
+
+git status
+
+git add . -n
+git add .
+
+## tidy data and clean it and then convert raw data to a nice R object of the minimal tidy data set.
 
 This section introduces “tidy data,” a way to organize your data that works particularly well with R.
 
+squashed your commits and pushed to Github and created a pull request for your RAP buddy to review
+
+
 ```{r}
+devtools::check()
+regreg <- read.csv('./data-raw/register.csv', header = TRUE)
+
+#regreg <- readr::read_csv("./data-raw/register.csv")
+#devtools::use_data(regreg)
+# some code to go from raw data csv to a nice RDA object
 
 
+# create_regreg
+
+regreg <- readr::read_csv("./data-raw/register.csv")
+
+# as factor
+regreg$phase <- forcats::as_factor(regreg$phase)
+
+#give nice name
+regreg <- dplyr::rename(regreg, date = `entry-timestamp`)
+
+# copyright looks empty
+regreg <- dplyr::select(regreg, -copyright)
+
+# overwrite old data
+usethis::use_data(regreg, overwrite = TRUE)
+
+rm(regreg)
+```
+
+# Look at https://r-pkgs.org/data.html#data-extdata for more information
+
+## Rendering development documentation
+
+# Whenever you make a new changes and whant to see the effect of those changes in the pachage use:
+
+cmd(ctrl) + Shift + L
+==
+devtools::load_all(".")
+
+?regreg does not show anything ==>
+in R folder create a new R code : data.R
+
+cmd(ctrl) + Shift + D
+==> 
+devtools::document(roclets = c('rd', 'collate', 'namespace'))
+
+Thus, see ?regreg that
+shows Rendering development documentation for "regreg"
+
+# Making Messy Data Pretty
+# Logging When Things Go Wrong
+https://www.r-bloggers.com/2016/08/python-style-logging-in-r/
+
+https://www.r-bloggers.com/2013/03/better-logging-in-r-aka-futile-logger-1-3-0-released/
+
+http://adv-r.had.co.nz/Exceptions-Debugging.html
+
+```{r}
+?regreg 
+
+devtools::load_all(".")
+devtools::document(roclets = c('rd', 'collate', 'namespace'))
+
+?regreg 
 
 ```
 
+## ---------------------------------------------- ##
+## QUALITY ASSURRANCE ==> ERROR LOGGING DEBUGGING MESSAGING
+## Converting the data object into minimal tidy dataset and class
+
+# Use futile.logger
+
+Create a new function: phase_date_data.R
+and place it in R folder
+
+```{r}
+#' @title minimal tidy data set for regregrap report production.
+#'
+#' @description \code{year_phase_data} is the class used for the creation of all
+#'  figures and tables in the made up RAP report (it's a demo for the RAP MOOC).
+#'
+#'
+#' @details The \code{year_phase_data} class expects a \code{data.frame} with at
+#' least three columns: phase, date (entry-timestamp), and register name. Each
+#' row represents a unique register.
+#'
+#'   Once inititated, the class has five slots: \code{df}: the basic
+#'   \code{data.frame}, \code{colnames}: a character vector containing the
+#'   column names from the \code{df}, \code{phase_levels}: a
+#'   factor vector containing levels of \code{df$phase} of the factor sector,
+#'   \code{yq}: an date vector containing \code{zoo::as.yearqrt(df$date)}.
+#'
+#' @param x Input dataframe, see details.
+#' @param log_level The severity level at which log messages are written from
+#' least to most serious: TRACE, DEBUG, INFO, WARN, ERROR, FATAL. Default is
+#' level is INFO. See \code{?flog.threshold()} for additional details.
+#' @param log_appender Defaults to write the log to "console", alternatively you
+#' can provide a character string to specify a filename to also write to. See
+#' for additional details \code{?futile.logger::appender.tee()}.
+#' @param eda If TRUE an graphical data analysis is conducted for a human to check.
+#'
+#' @return If the class is not instantiated correctly, nothing is returned.
+#'
+#' @examples
+#'
+#' library(regregrap)
+#'
+#' df <- phase_date_data(regreg)
+#'
+#' @export
+
+
+phase_date_data <- function(x, log_level = futile.logger::WARN,
+                             log_appender = "console", eda = FALSE) {
+
+  # Set logger severity threshold, defaults to
+  # high level use (only flags warnings and errors)
+  # Set log_level argument to futile.logger::TRACE for full info
+  futile.logger::flog.threshold(log_level)
+
+  # Set where to write the log to
+  if (log_appender != "console")
+  {
+    # if not console then to a file called...
+    futile.logger::flog.appender(futile.logger::appender.file(log_appender))
+  }
+
+  # Checks
+  futile.logger::flog.info('Initiating phase_date_data class.
+                           \n\nExpects a data.frame with at
+                           least three columns: phase, date (entry-timestamp),
+                           and register name. Each
+                           row represents a unique register..
+                           More information on the format expected by
+                           this class is given by ?phase_date_data().')
+
+  # Integrity checks on incoming data ----
+
+  # Check the structure of the data is as expected: data.frame containing no
+  # missing values and at least three columns, containing phase, date and register name.
+
+  futile.logger::flog.info('\n*** Running integrity checks on input dataframe (x):')
+  futile.logger::flog.debug('\nChecking input is properly formatted...')
+
+  futile.logger::flog.debug('Checking x is a data.frame...')
+  if (!is.data.frame(x))
+  {
+    futile.logger::flog.error("x must be a data.frame",
+                              x, capture = TRUE)
+  }
+
+  futile.logger::flog.debug('Checking x has correct columns...')
+  if (length(colnames(x)) < 3)
+  {
+    futile.logger::flog.error("x must have at least three columns: phase, date and register")
+  }
+
+  futile.logger::flog.debug('Checking x contains a date column...')
+  if (!'date' %in% colnames(x)) stop("x must contain date column")
+
+  futile.logger::flog.debug('Checking x contains a phase column...')
+  if (!'phase' %in% colnames(x)) stop("x must contain phase column")
+
+  futile.logger::flog.debug('Checking x does not contain missing values...')
+  if (anyNA(x)) stop("x cannot contain any missing values")
+
+  futile.logger::flog.debug('Checking for the correct number of rows...')
+  if (nrow(x) < 25) {
+    futile.logger::flog.warn("x does not appear to be well formed. nrow(x) should be
+                             greater than 26 as of early 2018.")
+  }
+
+
+
+  futile.logger::flog.info('...passed')
+
+  # User assertr to run statistical tests on the data itself ----
+
+  futile.logger::flog.info("\n***Running statistical checks on input dataframe (x)")
+
+  futile.logger::flog.trace("These tests are implemented using the package assertr see:
+                            https://cran.r-project.org/web/packages/assertr for more details.")
+
+
+  # Check snsible range for year
+
+  futile.logger::flog.debug('Checking years in a sensible range (2015:2025)...')
+
+  if (any(lubridate::year(regreg$date) < 2016)) {
+    futile.logger::flog.warn("The dates are not in a sensible range, have they been
+                             read in correctly?")
+  }
+
+  # hopefully moved beyond RAP by 2025...
+  if (any(lubridate::year(regreg$date) > 2025)) {
+    futile.logger::flog.warn("The dates look dodgy,
+                             are you still using RAP in 2025?")
+  }
+
+  # Check that the correct levels are in phase
+
+  futile.logger::flog.debug('Checking sectors are correct...')
+
+  # Save sectors name lookup for use later
+
+  phase_set <- c(
+    "discovery"    = "Discovery",
+    "alpha"    = "Alpha",
+    "beta"     = "Beta",
+    "live"    = "Live"
+  )
+
+  # Check for outliers ----
+
+  # Could check for outliers here... given our data we can't
+
+  futile.logger::flog.info('...passed')
+
+  # Reset threshold to package default
+  futile.logger::flog.threshold(futile.logger::INFO)
+  # Reset so that log is appended to console (the package default)
+  futile.logger::flog.appender(futile.logger::appender.console())
+
+  # Message required to pass a test
+  message("Checks completed successfully:
+          object of 'phase_date_data' class produced!")
+
+  # EDA
+  # some people like to eyeball stuff
+  if (eda == TRUE) {
+    plot(rev(regreg$date),
+         ylab = "Date published",
+         xlab = "Cumulative count of published registers")
+
+  }
+
+  # Drop unnecessary columns
+  x <- x[, c("register", "phase", "date")]
+  # Define the class here ----
+
+  structure(
+    list(
+      df = x,
+      colnames = colnames(x),
+      type = colnames(x)[!colnames(x) %in% c('date','phase', 'register')],
+      phase_levels = levels(x$phase),
+      phase_set = phase_set,
+      yq = zoo::as.yearqtr(x$date, format = "%Y-%m-%d")
+    ),
+    class = "phase_date_data")
+  }
+
+```
+
+rm(list = c("phase_date_data"))
+
+==> devtools::load_all(".")
+==> devtools::document(roclets = c('rd', 'collate', 'namespace'))
+
+x <- DataTidying::phase_date_data(regreg, eda = TRUE)
+
+Checks completed successfully:
+          object of 'phase_date_data' class produced!
+
+# 
+          
+class(x)
+==>     [1] "phase_date_data"
+
+```{r}
+rm(list = c("phase_date_data"))
+
+devtools::load_all(".")
+devtools::document(roclets = c('rd', 'collate', 'namespace'))
+
+x <- DataTidying::phase_date_data(regreg, eda = TRUE)
+
+class(x)
+```
+
+
+
+
+
+## ----------------------------------------------- ##
 ## making untidy data tidy
 reorganize the values in your data set with the the spread() and gather() functions of the tidyr package.
 
