@@ -2,5 +2,30 @@
 .Rhistory
 .RData
 .Ruserdata
+.DS_Store
 
+# Specific to this package
 sensitive.txt
+# General template from dotfiles
+# Always ignore official files #
+################################
+*[oO][fF][fF][iI][cC][iI][aA][lL]*
+# Ignore data files of various formats.
+# A non-exaustive list.
+# Common text files that may contain data #
+###########################################
+*.[cC][sS][vV]
+*.[tT][xX][tT]
+# Excel files (including macros and templates) #
+################################################
+*.[xX][lL][sS][xXmMtT]?
+# SPSS formats #
+################
+*.[sS][aA][vV]
+# SAS format #
+##############
+*.[sS][aA][sS]7[bB][dD][aA][tT]
+# don't ignore this
+!register.csv
+packrat/lib*/
+inst/doc
