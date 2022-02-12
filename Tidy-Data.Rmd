@@ -35,12 +35,41 @@ library(DSR)
 
 ```
 
+## ----------------------------------------------- ##
+
+
 ```{r}
 getwd()
 setwd("~/git/MoJ/TidyData/DataTidying")
 
 devtools::create("/Users/leilayousefi/LeilaDocuments/git/MoJ/TidyData/DataTidying")
 ```
+
+## ----------------------------------------------- ##
+```{r}
+#' GOV.UK register register.
+#'
+#' A dataset containing the characteristics of all
+#'  the published GOV.UK registers.
+#'
+#' @format A data frame
+#' \describe{
+#'   \item{date}{date register was published}
+#'   \item{register}{name of register}
+#'   \item{text}{description of register contents}
+#'   \item{registry}{responsible body of register}
+#'   \item{phase}{The stage of development a register is in.
+#'   There are 4 phases - discovery, alpha, beta and live.}
+#'   \item{copyright}{The copyright and licensing terms which
+#'    may apply to the data held in a register.}
+#'   \item{fields}{variables contained in the register}
+#'   ...
+#' }
+#' @source \url{https://register.register.gov.uk/records}
+"regreg"
+
+```
+
 
 ## Git Repo
 cd DataTidying 
@@ -193,6 +222,9 @@ git status
 git add . -n
 git add .
 
+## ----------------------------------------------- ##
+
+
 ## tidy data and clean it and then convert raw data to a nice R object of the minimal tidy data set.
 
 This section introduces “tidy data,” a way to organize your data that works particularly well with R.
@@ -229,6 +261,9 @@ rm(regreg)
 ```
 
 # Look at https://r-pkgs.org/data.html#data-extdata for more information
+
+## ----------------------------------------------- ##
+
 
 ## Rendering development documentation
 
@@ -279,6 +314,7 @@ see https://r-pkgs.org/man.html
 Create a new function: phase_date_data.R
 and place it in R folder
 
+phase_date_data.R:
 ```{r}
 #' @title minimal tidy data set for regregrap report production.
 #'
@@ -482,19 +518,34 @@ devtools::document(roclets = c('rd', 'collate', 'namespace'))
 x <- DataTidying::phase_date_data(regreg, eda = TRUE)
 
 class(x)
+
+
 ```
 
 
+```{r}
 
+devtools::load_all(".")
+devtools::document(roclets = c('rd', 'collate', 'namespace'))
 
+```
 
 ## ----------------------------------------------- ##
-## Writing Functions
 
 ## Create a new issue in Github
 # Created fivereg_recent.R #6
+a new issue --> name: Created fivereg_recent.R
 
-Add fivreg_recent.R
+## Writing Functions
+Write a function.
+Load it with Ctrl/Cmd + Shift + L or devtools::load_all().
+Experiment with it in the console to see if it works.
+Rinse and repeat.
+
+fivereg_recent inside fivreg_recent.R file created in R folder
+
+#Added fivreg_recent.R :
+
 ```{r}
 #' @title The five most recent published registers.
 #'
@@ -571,10 +622,309 @@ finally = {}
   )
 
 }
+# For testing and QA always use cmd+shift+ L
+devtools::load_all(".")
+rm(list = c("fivereg_recent"))
+```
+
+## Testing
+Check a few things inside the function and be suspicious:
+
+#e.g., by using 
+
+stopifnot(is.character(df$register))
+
+#check if it is a date:
+stopifnot(lubridate::is.POSIXct(df$date))
+
+## Template for Function and Test:  (DO NOT RUN)
+
+
+# we are suspicious, run checks
+# bare bones error handling
+  # informative error handling
+  out <- tryCatch(
+    expr = {
+
+# your function body goes here
+
+    },
+warning = function() {
+
+  w <- warnings()
+  warning('Warning produced running fivereg_recent():', w)
+
+},
+error = function(e)  {
+
+  stop('Error produced running fivereg_recent():', e)
+
+},
+finally = {}
+  )
+
+# your functions closing }
+
+## Error Handling
+fivereg_recent(report_data)$date
+
+# To check if there is errors:
+report_data <- phase_date_data(regreg, log_level = futile.logger::ERROR)
+
+# To see more information for quality assurance:
+report_data <- phase_date_data(regreg, log_level = futile.logger::DEBUG)
+
+
+# For testing and QA always use cmd+shift+ L
+devtools::load_all(".")
+
+fivereg_recent(df)$date
+
+## .............................................. ##
+## on Code editor:
+git checkout -b feature/fivereg_recent
+git status   
+git add .  
+git commit -m "feature/fivereg_recent Added fivereg_recent R code"
+git push origin feature/fivereg_recent -u
+git pull
+
+## #is unit testing worth the effort?
+https://stackoverflow.com/questions/67299/is-unit-testing-worth-the-effort?rq=1
+
+# Install the released version from CRAN of testthat
+# in RStduio type in console
+# Or the development version from GitHub:
+# install.packages("devtools")
+
+```{r}
+#devtools::install_github("r-lib/testthat”)
+install.packages("testthat")
+```
+
+#set up your package to use testthat
+```{r}
+usethis::use_testthat()
+```
+
+# USE this test examples:
+
+https://github.com/DCMSstats/eesectors/blob/master/tests/testthat/test_year_sector_data.R
+
+# testthat.R
+```{r}
+library(testthat)
+library(dplyr)
+
+test_check("DataTidying")
+```
+
+
+## Test structure Template
+
+A test file lives in tests/testthat/. Its name must start with test. Here’s an example of a test file from the stringr package:
+
+context("String length")
+library(stringr)
+
+test_that("str_length is number of characters", {
+  expect_equal(str_length("a"), 1)
+  expect_equal(str_length("ab"), 2)
+  expect_equal(str_length("abc"), 3)
+})
+#> Test passed 🥇
+
+test_that("str_length of factor is length of level", {
+  expect_equal(str_length(factor("a")), 1)
+  expect_equal(str_length(factor("ab")), 2)
+  expect_equal(str_length(factor("abc")), 3)
+})
+#> Test passed 🎉
+
+test_that("str_length of missing is missing", {
+  expect_equal(str_length(NA), NA_integer_)
+  expect_equal(str_length(c(NA, 1)), c(NA, 1))
+  expect_equal(str_length("NA"), 2)
+})
+#> Test passed 🌈
+
+#stringr
+
+https://cran.r-project.org/web/packages/stringr/vignettes/stringr.html
+
+# FROM testing hadley wickham
+http://r-pkgs.had.co.nz/tests.html
+
+## Unit Testing - Traditional:
+Step1: write Logic (functions)
+Step2: wite Tests (testthat)
+
+# writing some tests in R
+# test_fivereg_recent.R
+
+```{r}
+context("fivereg_recent works as intended")
+
+x <- phase_date_data(regreg)
+
+mtcars_df_slot <- mtcars
+mtcars_df_slot$df <- mtcars
+
+# checked manually using Excel
+manual_fivereg <- "allergen, statistical-geography-unitary-authority-eng,
+                    statistical-geography-non-metropolitan-district-eng, 
+                    statistical-geography-registration-district-wls, 
+                    statistical-geography-registration-district-eng"
+
+test_that(
+  "fivereg_recent runs without errors",
+  {
+    expect_silent(fivereg_recent(x))
+  }
+)
+
+#
+devtools::test()
+#
+
+test_that("fivereg_recent errors if input is not suitable dataframe", {
+  expect_error(fivereg_recent(15))
+  expect_error(fivereg_recent(mtcars_df_slot))
+
+})
+
+#
+devtools::test()
+#
+
+
+test_that("fivereg_recent equals manual sorting", {
+  expect_equal(fivereg_recent(x), manual_fivereg)
+
+})
+
+test_that("fivereg_recent with n; correct number of commas", {
+  expect_equal(stringr::str_count(fivereg_recent(x, 10),
+                                  ','),  # we didn't fix the last comma being
+               # an and
+               9)
+
+})
+
+#
+devtools::test()
+#
+
+
+```
+
+
+cmd + shift + t:
+
+```{r}
+
+test_check("DataTidying")
+
+devtools::test()
+
+```
+
+## Test Driven Development:
+Step1: write Tests (testthat)
+Step2: write Logic (functions)
+
+## Step1:
+# test_figure_2.R
+```{r}
+context("figure_2 works as intended")
+
+x <- phase_date_data(regreg)
+
+test_that("figure_2 runs without errors", {
+  expect_silent(figure_2(x))
+})
+
+test_that("figure_2 outputs a gg, ggplot class", {
+  expect_equal(class(figure_2(x)), c("gg", "ggplot"))
+
+})
+devtools::test()
+```
+
+Tests failed ==>
+## Step2:
+# figure_2.R
+```{r}
+#' @title Figure 2 of the regreg RAP report.
+#'
+#' @description The function returns the time series ggplot2 object geom_line.
+#'
+#' @param x Input object of \code{year_phase_data} class.
+#'
+#' @return Returns a ggplot object.
+#'
+#' @examples
+#'
+#' library(regregrap)
+#' report_data <- phase_date_data(regreg)
+#' figure_2(report_data)
+#'
+#' @export
+#'
+
+figure_2 <- function(x) {
+
+  x$df$id <- as.numeric(row.names(x$df))
+  x$df
+
+  p <- ggplot2::ggplot(x$df, ggplot2::aes(x = date, y = rev(id))) +
+    ggplot2::geom_line() +
+    ggplot2::xlab("Date published") +
+    ggplot2::ylab("Total registers published")
+
+  return(p)
+
+}
+devtools::load_all(".")
+```
+
+
+## ......................................... ##
+#tdd wikipedia
+https://en.wikipedia.org/wiki/Test-driven_development
+
+#what’s the difference between unit testing and ttd?
+https://www.youtube.com/watch?v=QCif_-r8eK4
+
+#code, from rap repo
+https://github.com/mammykins/regregrap
+
+# code
+```{r}
+report_data <- DataTidying::phase_date_data(regreg)
+  
+  
+  x$df$id <- as.numeric(row.names(x$df))
+  
+  x$df
+  
+  p <- ggplot(x$df, aes(x=date, y = rev(id))) +
+        geom_line() +
+        xlab("Date published") +
+        ylab("Total register published")
+#return(p)
+p
+
+
+# test
+expect_equal(class(figure_2(x)), c("gg), "ggplot))
+
 ```
 
 
 
+
+## ......................................... ##
 ## making untidy data tidy
 reorganize the values in your data set with the the spread() and gather() functions of the tidyr package.
 
