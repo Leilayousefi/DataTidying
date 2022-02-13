@@ -17,7 +17,7 @@ The preview shows you a rendered HTML copy of the contents of the editor. Conseq
 
 # Loading required package: 
 install.packages("usethis")
-install.packages(c("devtools", "roxygen2", "testthat", "knitr", "tidyr", "dplyr", "ggplot2"))
+install.packages(c("devtools", "roxygen2", "testthat", "tidyverse", "knitr", "tidyr", "dplyr", "ggplot2", "stringr"))
 
 #devtools::install_github("tidyverse/forcats")
 devtools::install_github("garrettgman/DSR",force = TRUE)
@@ -25,8 +25,13 @@ library(usethis)
 library(devtools)
 library(roxygen2)
 library(testthat)
+library(tidyverse)
 library(tidyr)
 library(DSR)
+library(dplyr)
+library(ggplot2)
+library(knitr)
+library(stringr)
 
 # version of devtools?
 # packageVersion("devtools")
@@ -47,6 +52,8 @@ devtools::create("/Users/leilayousefi/LeilaDocuments/git/MoJ/TidyData/DataTidyin
 
 ## ----------------------------------------------- ##
 ```{r}
+getwd()
+
 #' GOV.UK register register.
 #'
 #' A dataset containing the characteristics of all
@@ -302,7 +309,7 @@ devtools::load_all(".")
 devtools::document(roclets = c('rd', 'collate', 'namespace'))
 
 ?regreg 
-
+rm(list = c("figure_2"))
 ```
 
 ## ---------------------------------------------- ##
@@ -524,6 +531,7 @@ x <- DataTidying::phase_date_data(regreg, eda = TRUE)
 
 class(x)
 
+figure_2 <- DataTidying::
 
 ```
 
@@ -702,11 +710,6 @@ https://stackoverflow.com/questions/67299/is-unit-testing-worth-the-effort?rq=1
 # in RStduio type in console
 # Or the development version from GitHub:
 # install.packages("devtools")
-
-```{r}
-#devtools::install_github("r-lib/testthat”)
-install.packages("testthat")
-```
 
 #set up your package to use testthat
 ```{r}
@@ -1052,6 +1055,30 @@ CI check the command after every commit followed by push
 
 # Badges and Tags in Github:
 
+## install dependencies for MacOS
+
+# Terminal ==>
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+# ==> Next steps:
+- Run brew help to get started
+- Further documentation:
+    https://docs.brew.sh
+    
+#brew update
+#brew install travis
+
+# install Xcode 13.3 Beta 2 Release Notes
+
+Xcode 13.3 Beta 2 Release Notes
+
+
+
+
+install.packages("remotes")
+library(remotes)
+install.packages("gitcreds")
+library(gitcreds)
 
 ```{r}
 install.packages("tidyverse") 
@@ -1061,10 +1088,20 @@ devtools::check(remote = TRUE, manual = TRUE)
 
 devtools::load_all(".")
 devtools::document(roclets = c('rd', 'collate', 'namespace'))
+devtools::install_deps(dependencies = TRUE)
+check(force_suggests = FALSE)
 
 devtools::use_travis()
 ```
+## On code editor (visual studio code)
+git checkout -b feature/test_fail
+git add .
+...
+git push feature/travis-ci -u
+## The above cmd is followed in gitgub by a pull request and merge
+...
 
+## ##################
 # sign up to travis
 https://travis-ci.org/
 
@@ -1085,7 +1122,40 @@ https://ci.appveyor.com/login
 https://github.com/DCMSstats/eesectors/blob/master/.travis.yml
 
 
-   
+## ......................................... ##
+##  Extra Quality Assurrance
+
+## On code editor (visual studio code)
+git checkout -b feature/test_fail
+git add .
+...
+
+## ##################
+
+# package dependencies in description 
+http://r-pkgs.had.co.nz/description.html
+
+# eesectors example
+https://github.com/DCMSstats/eesectors/blob/master/DESCRIPTION
+
+#packrat
+https://rstudio.github.io/packrat/
+
+
+## ......................................... ##
+##  Dependency Hell!
+
+#rap companion
+https://ukgovdatascience.github.io/rap_companion/code-cover.html
+
+#regregrap travis sticker
+https://github.com/mammykins/regregrap
+
+#codecov
+https://codecov.io/
+
+# eesectors readme with codecov badges
+https://github.com/DCMSstats/eesectors/blob/master/README.md   
 
 ## ......................................... ##
 

@@ -2,7 +2,7 @@
 % Please edit documentation in R/figure_2.R
 \name{figure_2}
 \alias{figure_2}
-\title{Figure 2 of the regreg RAP report.}
+\title{Figure 2 of the DataTidying RAP report.}
 \usage{
 figure_2(x)
 }
@@ -17,7 +17,7 @@ The function returns the time series ggplot2 object geom_line.
 }
 \examples{
 
-library(regregrap)
+library(DataTidying)
 report_data <- phase_date_data(regreg)
 figure_2(report_data)
 
