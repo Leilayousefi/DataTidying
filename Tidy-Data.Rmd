@@ -73,6 +73,10 @@ devtools::create("/Users/leilayousefi/LeilaDocuments/git/MoJ/TidyData/DataTidyin
 
 ## Git Repo
 cd DataTidying 
+
+# Check where were you to start from the previous steps
+git log --oneline 
+
 git status 
 git add . -n
 git add .
@@ -316,7 +320,8 @@ and place it in R folder
 
 phase_date_data.R:
 ```{r}
-#' @title minimal tidy data set for regregrap report production.
+devtools::load_all()
+#' @title minimal tidy data set for DataTidying report production.
 #'
 #' @description \code{year_phase_data} is the class used for the creation of all
 #'  figures and tables in the made up RAP report (it's a demo for the RAP MOOC).
@@ -345,7 +350,7 @@ phase_date_data.R:
 #'
 #' @examples
 #'
-#' library(regregrap)
+#' library(DataTidying)
 #'
 #' df <- phase_date_data(regreg)
 #'
@@ -490,7 +495,7 @@ phase_date_data <- function(x, log_level = futile.logger::WARN,
       yq = zoo::as.yearqtr(x$date, format = "%Y-%m-%d")
     ),
     class = "phase_date_data")
-  }
+}
 
 ```
 
@@ -547,6 +552,7 @@ fivereg_recent inside fivreg_recent.R file created in R folder
 #Added fivreg_recent.R :
 
 ```{r}
+devtools::load_all()
 #' @title The five most recent published registers.
 #'
 #' @description The \code{fivereg_recent} function expects the
@@ -564,7 +570,7 @@ fivereg_recent inside fivreg_recent.R file created in R folder
 #'
 #' @examples
 #'
-#' library(regregrap)
+#' library(DataTidying)
 #' report_data <- phase_date_data(regreg)
 #' fivereg_recent(report_data)
 #'
@@ -716,7 +722,7 @@ https://github.com/DCMSstats/eesectors/blob/master/tests/testthat/test_year_sect
 library(testthat)
 library(dplyr)
 
-test_check("DataTidying")
+#test_check("DataTidying")
 ```
 
 
@@ -763,9 +769,12 @@ Step2: wite Tests (testthat)
 # test_fivereg_recent.R
 
 ```{r}
+devtools::load_all(".")
+devtools::document(roclets = c('rd', 'collate', 'namespace'))
+
 context("fivereg_recent works as intended")
 
-x <- phase_date_data(regreg)
+x <- DataTidying::phase_date_data(regreg)
 
 mtcars_df_slot <- mtcars
 mtcars_df_slot$df <- mtcars
@@ -784,7 +793,7 @@ test_that(
 )
 
 #
-devtools::test()
+#devtools::test()
 #
 
 test_that("fivereg_recent errors if input is not suitable dataframe", {
@@ -794,13 +803,12 @@ test_that("fivereg_recent errors if input is not suitable dataframe", {
 })
 
 #
-devtools::test()
+#devtools::test()
 #
 
 
 test_that("fivereg_recent equals manual sorting", {
   expect_equal(fivereg_recent(x), manual_fivereg)
-
 })
 
 test_that("fivereg_recent with n; correct number of commas", {
@@ -812,7 +820,7 @@ test_that("fivereg_recent with n; correct number of commas", {
 })
 
 #
-devtools::test()
+#devtools::test()
 #
 
 
@@ -822,12 +830,23 @@ devtools::test()
 cmd + shift + t:
 
 ```{r}
+#testthat::test_dir("/Users/leilayousefi/LeilaDocuments/git/MoJ/TidyData/DataTidying/tests/testthat/")
 
-test_check("DataTidying")
+#testthat::test_check("DataTidying")
 
-devtools::test()
+#devtools::test()
 
 ```
+
+#tdd wikipedia
+https://en.wikipedia.org/wiki/Test-driven_development
+
+#what’s the difference between unit testing and ttd?
+https://www.youtube.com/watch?v=QCif_-r8eK4
+
+#code, from rap repo
+https://github.com/mammykins/regregrap
+
 
 ## Test Driven Development:
 Step1: write Tests (testthat)
@@ -851,6 +870,30 @@ test_that("figure_2 outputs a gg, ggplot class", {
 devtools::test()
 ```
 
+## .............................................. ##
+
+# code
+```{r}
+report_data <- DataTidying::phase_date_data(regreg)
+  
+  
+  x$df$id <- as.numeric(row.names(x$df))
+  
+  x$df
+  
+  p <- ggplot2::ggplot(x$df, ggplot2::aes(x=date, y = rev(id))) +
+        ggplot2::geom_line() +
+        ggplot2::xlab("Date published") +
+        ggplot2::ylab("Total register published")
+#return(p)
+p
+
+
+# test
+expect_equal(class(figure_2(x)), c("gg", "ggplot"))
+
+```
+
 Tests failed ==>
 ## Step2:
 # figure_2.R
@@ -865,7 +908,7 @@ Tests failed ==>
 #'
 #' @examples
 #'
-#' library(regregrap)
+#' library(DataTidying)
 #' report_data <- phase_date_data(regreg)
 #' figure_2(report_data)
 #'
@@ -888,43 +931,165 @@ figure_2 <- function(x) {
 devtools::load_all(".")
 ```
 
+## .............................................. ##
+## on Code editor:
+git checkout -b feature/test
+git status   
+git add .  
+git commit -m "feature/test Added fivereg_recent R code"
+git push origin feature/test -u
+git pull
 
-## ......................................... ##
-#tdd wikipedia
-https://en.wikipedia.org/wiki/Test-driven_development
 
-#what’s the difference between unit testing and ttd?
-https://www.youtube.com/watch?v=QCif_-r8eK4
+## .............................................. ##
+#visual tests for ggplot objectsr
+https://github.com/lionel-/vdiffr
 
-#code, from rap repo
-https://github.com/mammykins/regregrap
+#visualTest
+https://stackoverflow.com/questions/30246789/how-to-test-graphical-output-of-functions
 
-# code
+#attempted move from visualTest to vdiffr for eesectors, build failure issue
+#to do with FreeType issue described in the readme for vdiffr repo
+# however, visualTest wasn’t failing when it should of been (detected with TDD)
+https://github.com/DCMSstats/eesectors/commits/fix/47
+
+
+## .............................................. ##
+
+
+## Automated Testing:
+
+The workflow for checking a package is simple, but tedious:
+
+# 1. Run devtools::check(), or press Ctrl/Cmd + Shift + E:
+
 ```{r}
-report_data <- DataTidying::phase_date_data(regreg)
-  
-  
-  x$df$id <- as.numeric(row.names(x$df))
-  
-  x$df
-  
-  p <- ggplot(x$df, aes(x=date, y = rev(id))) +
-        geom_line() +
-        xlab("Date published") +
-        ylab("Total register published")
-#return(p)
-p
-
-
-# test
-expect_equal(class(figure_2(x)), c("gg), "ggplot))
-
+devtools::check()
 ```
 
+# 2. Fix the first problem.
+
+# 2.1 Create an issue in Github:
+name of issue: 
+Package check fails - Automated testing with R cmd check
+
+# 2.2 read the errors:
+e.g, package dependency ==> after reading DESCRIPTION file in R studio
+
+# 2.3 search for the "DESCRIPTION" on: http://r-pkgs.had.co.nz/check.html and (cmd + F (DESCRIPTION))
+
+# 2.4 OR writing r extension:
+https://cran.r-project.org/doc/manuals/r-release/R-exts.html#The-DESCRIPTION-file   and  (cmd + F (DESCRIPTION))
+
+# 2.5 OR in eesctors package in github
+
+# 2.6 go find a reliable description file and copy it as appropriate
+
+#2.6.1 on Depends section in the DESCRIPTION file add the dependent package e.g dplyr 
+
+e.g. dplyr error so add "dplyr (>= 0.6.1)" to Depends in Description file
+
+#Depends: R (>= 3.4.1), dplyr (>= 0.6.1)
+
+#2.6.2 
+Suggests: testthat
+-> go to the packages and check the version of packages and add it
+#Suggests: testthat(>= 1.0.2)
+
+#2.6.3 
+another warning about licence and go to eesectors and copy the licence to fix warning 
+# License: GPL-3
+
+Namespaces accessed by the ‘::’ and ‘:::’ operators must be listed here, or in ‘Suggests’ or ‘Enhances’
+
+#Imports: futile.logger (>= 1.4.3), ggplot2 (>=2.2.1), lubridate (), tibble (), zoo ()
+
+# 2.7 Run devtools::check(), or press Ctrl/Cmd + Shift + E:
+
+```{r}
+devtools::check()
+```
+
+# find inspiration from other packages
+# e.g. Description file
+https://github.com/DCMSstats/eesectors
+
+## ..................................... ##
+# on Code editor:
+git checkout -b feature/test
+git status   
+git add .  
+git commit -m "feature/test Added fivereg_recent R code"
+git push origin feature/test -u
+git pull   
+
+## ......................................... ##
+
+
+Repeat until there are no more problems.
+
+R CMD check returns three types of messages:
+
+ERRORs: Severe problems that you should fix regardless of whether or not you’re submitting to CRAN.
+
+WARNINGs: Likely problems that you must fix if you’re planning to submit to CRAN (and a good idea to look into even if you’re not).
+
+NOTEs: Mild problems. If you are submitting to CRAN, you should strive to eliminate all NOTEs, even if they are false positives. If you have no NOTEs, human intervention is not required, and the package submission process will be easier. If it’s not possible to eliminate a NOTE, you’ll need describe why it’s OK in your submission comments, as described in release notes. If you’re not submitting to CRAN, carefully read each NOTE, but don’t go out of your way to fix things that you don’t think are problems.
 
 
 
 ## ......................................... ##
+
+
+
+
+## ......................................... ##
+##   Continuous Integration (CI) with Travis
+
+## checking after every commit with Travis 
+
+CI check the command after every commit followed by push
+
+# Badges and Tags in Github:
+
+
+```{r}
+install.packages("tidyverse") 
+library(tidyverse)
+
+devtools::check(remote = TRUE, manual = TRUE)
+
+devtools::load_all(".")
+devtools::document(roclets = c('rd', 'collate', 'namespace'))
+
+devtools::use_travis()
+```
+
+# sign up to travis
+https://travis-ci.org/
+
+#guide to travis
+https://docs.travis-ci.com/user/getting-started/
+
+# good blog on intro to travis
+# how to get it to pass, common problems
+https://juliasilge.com/blog/beginners-guide-to-travis/
+
+# hadley wickham, bottom of the page
+http://r-pkgs.had.co.nz/check.html
+
+# Windows build test with appveyor
+https://ci.appveyor.com/login
+
+# eesectors example
+https://github.com/DCMSstats/eesectors/blob/master/.travis.yml
+
+
+   
+
+## ......................................... ##
+
+
 ## making untidy data tidy
 reorganize the values in your data set with the the spread() and gather() functions of the tidyr package.
 

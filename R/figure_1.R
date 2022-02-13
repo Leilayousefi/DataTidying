@@ -8,8 +8,8 @@
 #'
 #' @examples
 #'
-#' report_data <- regregrap::phase_date_data(regregrap::regreg)
-#' regregrap::figure_1(report_data)
+#' report_data <- DataTidying::phase_date_data(ƒ::regreg)
+#' DataTidying::figure_1(report_data)
 #'
 #' @export
 #' @param x Input phase_date_data class object.
