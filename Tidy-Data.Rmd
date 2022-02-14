@@ -1098,7 +1098,7 @@ usethis::use_travis()
 ```
 
 ```{r message=TRUE, warning=TRUE, paged.print=TRUE}
-usethis::use_travis(DataTidying)
+usethis::use_travis()
 ```
 
 ## On code editor (visual studio code)
@@ -1303,8 +1303,7 @@ https://rmarkdown.rstudio.com/html_document_format.html#custom_css
 
 https://bookdown.org/yihui/rmarkdown/html-document.html#advanced_customization
 
-## ......................................... ##
-##   Versioning   ##
+
 
 https://github.com/mammykins/regregrap
 
@@ -1348,34 +1347,130 @@ Questions for this assignment
 Have you wrapped your function in tryCatch()? If not have you used the futile.logger package for condition handling?
 
 We opted for futile.logger  for initiating the class and checking the data, we use tryCatch  for the other functions. futile.logger  has a good tutorial on the README.
-## ......................................... ##
-
-# devtools::install_github("leilayousefi/DataTidying")
-# devtools::install_github("leilayousefi/DataTidying@v1.0.0")
-# devtools::install_github("klutometis/roxygen")
-# devtools::install_github(c("rstudio/httpuv", "rstudio/shiny"))
-# devtools::install_github("hadley/httr@v0.4")
-# devtools::install_github("mammykins/regregrap@v1.0.0")
-
-# devtools::install_github("leilayousefi/DataTidying@v1.0.0")
-
-```{r}
-devtools::install_github("leilayousefi/DataTidying@v1.0.0")
-```
 
 ## Github -> realease -> new realease -> name: 1.0.0
+## ......................................... ##
+##   Versioning   ##
+
+
+$ git tag -a v1.4 -m "my version 1.4"
+$ git tag
+
+# Semantic Versioning
+https://semver.org/
+
+# add tags in git
+https://git-scm.com/book/en/v2/Git-Basics-Tagging
+
+# versions are based on git tags
+https://help.github.com/articles/creating-releases/
+
 ## ......................................... ##
 
 ##    Docker for reproducibility   ##
 Based on feedback I added a lecture on using Docker to ensure a reproducible computing environment for the production of your data product. This appears in Section 9 on Producing your report and includes an additional assignment. By the end of it you will have Docker installed and used a rocker container to produce your data product.
-# Download and install Docker and start with hello world program
+# Download and install Docker and start with hello world program:
+
+https://medium.com/crowdbotics/a-complete-one-by-one-guide-to-install-docker-on-your-mac-os-using-homebrew-e818eb4cfc3
+
+
+
+# Docker
+https://www.docker.com/what-docker
+
+# get docker
+https://www.docker.com/community-edition
+# or use brew
+# in terminal
+# brew install --cask docker 
+# docker --version
+$ brew install docker docker-machine
+$ brew cask install virtualbox
+-> need password
+-> possibly need to address System Preference setting
+$ docker-machine create --driver virtualbox default
+$ docker-machine env default
+$ eval "$(docker-machine env default)"
+$ docker run hello-world
+$ docker-machine stop default
+# in your terminal execute the following uncommented code
+# once installed pull an image
+docker pull hello-world
+
+# create container to run hello-world
+# read the output for details
+docker run hello-world
 
 # docker run hello world
 # docker run rucker/verse:3.5.0
 # docker run -d -p 8787:8787 rocker/verse:3.5.0
 
-localhost:8787
 ## ......................................... ##
+##   rockerverse
+
+Data:Code:Environment
+
+To reproduce the computing environment
+# Rocker for docker
+https://hub.docker.com/r/rocker/
+# rocker paper
+https://arxiv.org/abs/1710.03675
+
+#start docker, may take a while first time, specify a version to fix the computing environment in time
+# if you dont, it will run the latest docekr image
+
+docker run -d -p 8787:8787 rocker/verse
+
+browser  (http://localhost:8787)
+
+## In the browser in console of rstadio type in the following:
+
+# devtools::install_github("klutometis/roxygen")
+# devtools::install_github(c("rstudio/httpuv", "rstudio/shiny"))
+# devtools::install_github("hadley/httr@v0.4")
+# devtools::install_github("mammykins/regregrap@v1.0.0")
+
+# devtools::install_github("Leilayousefi/DataTidying@v1.0.0")
+
+```{r setup}
+knitr::opts_chunk$set(warning = TRUE, message = TRUE)
+devtools::install_github("klutometis/roxygen")
+devtools::install_github(c("rstudio/httpuv", "rstudio/shiny"))
+devtools::install_github("hadley/httr@v0.4")
+devtools::install_github("mammykins/regregrap")
+devtools::install_github("Leilayousefi/DataTidying")
+install.packages("rmarkdown")
+# install pandoc
+library(DataTidying)
+#library(klutometis/roxygen)
+library(httr)
+library(regregrap)
+library(httpuv)
+library(shiny)
+library(rmarkdown)
+```
+
+
+## Copy Vignette Rmd content and paste into the Rstadio new document rmarkdown (in the browser  (http://localhost:8787))
+
+# knit (cmd+shift+k)
+
+# A dockerfile example from eesectors package
+https://github.com/DCMSstats/eesectorsdocker
+
+# liftr approach might be useful
+https://cran.r-project.org/web/packages/liftr/vignettes/liftr-intro.html
+## ......................................... ##
+
+
+
+
+
+
+
+## ......................................... ##
+## ......................................... ##
+
 
 https://rdrr.io/github/DCMSstats/eegva/src/R/extract_sic91.R
 
