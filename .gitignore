@@ -27,5 +27,7 @@ sensitive.txt
 *.[sS][aA][sS]7[bB][dD][aA][tT]
 # don't ignore this
 !register.csv
+!.travis-c.yml
+!.travis.yml
 packrat/lib*/
 inst/doc

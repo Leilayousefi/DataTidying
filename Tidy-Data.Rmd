@@ -41,6 +41,8 @@ library(stringr)
 ```
 
 ## ----------------------------------------------- ##
+##   Package Development Prerequisites  ##
+https://support.rstudio.com/hc/en-us/articles/200486498-Package-Development-Prerequisites?_ga=2.234745885.203624782.1644777422-446760655.1643130254
 
 
 ```{r}
@@ -244,7 +246,7 @@ squashed your commits and pushed to Github and created a pull request for your R
 
 
 ```{r}
-devtools::check()
+#devtools::check()
 regreg <- read.csv('./data-raw/register.csv', header = TRUE)
 
 #regreg <- readr::read_csv("./data-raw/register.csv")
@@ -531,7 +533,7 @@ x <- DataTidying::phase_date_data(regreg, eda = TRUE)
 
 class(x)
 
-figure_2 <- DataTidying::
+figure_2 <- DataTidying::figure_2
 
 ```
 
@@ -870,7 +872,7 @@ test_that("figure_2 outputs a gg, ggplot class", {
   expect_equal(class(figure_2(x)), c("gg", "ggplot"))
 
 })
-devtools::test()
+# #   devtools::test()
 ```
 
 ## .............................................. ##
@@ -1091,10 +1093,18 @@ devtools::document(roclets = c('rd', 'collate', 'namespace'))
 devtools::install_deps(dependencies = TRUE)
 check(force_suggests = FALSE)
 
-devtools::use_travis()
+#devtools::use_travis()
+usethis::use_travis()
 ```
+
+```{r message=TRUE, warning=TRUE, paged.print=TRUE}
+usethis::use_travis(DataTidying)
+```
+
 ## On code editor (visual studio code)
-git checkout -b feature/test_fail
+git log --oneline
+git checkout -b feature/travis-ci
+git status
 git add .
 ...
 git push feature/travis-ci -u
@@ -1127,29 +1137,27 @@ https://github.com/DCMSstats/eesectors/blob/master/.travis.yml
 
 ## On code editor (visual studio code)
 git checkout -b feature/test_fail
+git status
 git add .
+...
+git push feature/test_fail -u
+## The above cmd is followed in gitgub by a pull request and merge
 ...
 
 ## ##################
-
-# package dependencies in description 
-http://r-pkgs.had.co.nz/description.html
-
-# eesectors example
-https://github.com/DCMSstats/eesectors/blob/master/DESCRIPTION
-
-#packrat
-https://rstudio.github.io/packrat/
-
-
-## ......................................... ##
-##  Dependency Hell!
+## On Github: Pull request
+then all checks failed!
+Thus, look at the problem 
 
 #rap companion
 https://ukgovdatascience.github.io/rap_companion/code-cover.html
 
 #regregrap travis sticker
 https://github.com/mammykins/regregrap
+
+## ##################
+## ##################
+## Use Travis-CI with Codcov (Code Coverage)
 
 #codecov
 https://codecov.io/
@@ -1160,6 +1168,246 @@ https://github.com/DCMSstats/eesectors/blob/master/README.md
 ## ......................................... ##
 
 
+
+## ......................................... ##
+##  Dependency Hell!
+
+
+## ##################
+# package dependencies in description 
+http://r-pkgs.had.co.nz/description.html
+
+# eesectors example
+https://github.com/DCMSstats/eesectors/blob/master/DESCRIPTION
+## ##################
+
+# packrat
+Set-up packrat for your package by following the guidance. Install packrat and then run it. 
+CAVEAT: It will take a long time to run the first time, don't panic.
+
+#packrat
+https://rstudio.github.io/packrat/
+
+https://rstudio.github.io/packrat/walkthrough.html
+https://rstudio.github.io/packrat/commands.html
+https://rstudio.github.io/packrat/rstudio.html
+https://rstudio.github.io/packrat/limitations.html
+https://rstudio.github.io/packrat/custom-repos.html
+
+```{r}
+install.packages("devtools")
+devtools::install_github("rstudio/packrat")
+```
+# you should have something liek this in your repo
+https://github.com/mammykins/regregrap/tree/master/packrat
+
+## ......................................... ##
+##    Error Logging
+
+# when should one stop testing software?
+It can relate quality assurance as a bayesian problem, as in when is the evidence sufficient that my code is bug free or suitably quality assured that I dont need to add any more tests then whether formal 
+
+
+## ......................................... ##
+##    vignette / Data product
+It is useful for updationg data and we could simply reproduce the vignette and its data would be updated appropriately.
+
+
+git checkout -b feature/vignette
+## On code editor (visual studio code)
+git log --oneline
+git checkout -b feature/vignette
+git status
+git add .
+...
+git push feature/vignette -u
+
+To create your first vignette, run:
+
+```{r}
+usethis::use_vignette("my-vignette")
+
+install.packages("rmarkdown")
+# install pandoc
+
+
+```
+
+This will:
+
+Create a vignettes/ directory.
+
+Add the necessary dependencies to DESCRIPTION (i.e. it adds knitr to the Suggests and VignetteBuilder fields).
+
+Draft a vignette, vignettes/my-vignette.Rmd.
+
+The draft vignette has been designed to remind you of the important parts of an R Markdown file. It serves as a useful reference when you’re creating a new vignette.
+
+Once you have this file, the workflow is straightforward:
+
+Modify the vignette.
+
+Press Ctrl/Cmd + Shift + K (or click ) to knit the vignette and preview the output.
+There are three important components to an R Markdown vignette:
+
+The initial metadata block.
+Markdown for formatting text.
+Knitr for intermingling text, code and results.
+These are described in the following sections.
+
+
+```{r}
+
+```
+
+# rap companion with links
+https://ukgovdatascience.github.io/rap_companion/pub.html
+
+# hadley wickham vignettes
+http://r-pkgs.had.co.nz/vignettes.html
+
+# prettify plots - gov format
+https://cran.r-project.org/web/packages/ggthemes/index.html
+
+# practice makes perfect, here’s a toy example which is useful if your new to RMarkdown
+https://github.com/moj-analytical-services/rmarkdown_training
+
+#see github repo
+https://github.com/ukgovdatascience/govstyle
+
+
+Follow Hadley Wickham's workflow to create a vignette with a suitable name. Create a minimal viable report and iterate as appropriate.
+
+Consider using other ready-made style templates or create your own custom css (ask around, your organisation probably already has one!).
+
+Questions for this assignment
+Have you produced your desired data product?
+
+How proud do you feel right now?
+
+# css style sheet, what is it?
+https://www.w3schools.com/html/html_css.asp
+
+# some nice templates
+https://blog.rstudio.com/2016/03/21/r-markdown-custom-formats/
+
+# ggplot themes
+https://cran.r-project.org/web/packages/ggthemes/vignettes/ggthemes.html
+
+# advanced customisation
+https://rmarkdown.rstudio.com/html_document_format.html#advanced_customization
+
+# custom css
+https://rmarkdown.rstudio.com/html_document_format.html#custom_css
+## ......................................... ##
+
+https://bookdown.org/yihui/rmarkdown/html-document.html#advanced_customization
+
+## ......................................... ##
+##   Versioning   ##
+
+https://github.com/mammykins/regregrap
+
+# look at some of Hadley’s tests here (or use a package you are familiar with)
+https://github.com/tidyverse/stringr/tree/master/tests/testthat
+
+# review the rap companion
+https://ukgovdatascience.github.io/rap_companion/
+
+#anything you want to add from your RAP battle experience?
+https://github.com/ukgovdatascience/rap_companion
+## ......................................... ##
+
+## Ensuring Quakity inputs 
+
+# using the futile.logger package
+This allowed us to modify the checks output to the console based on the expertise and interest of the user. For example, a statistician might just want to know if it passed or failed, whereas the package maintainer might like to see all checks.
+
+For example in the eesectors package compare the output when running:
+
+```{r}
+library(eesectors)
+ 
+GVA <- year_sector_data(GVA_by_sector_2016,
+                     log_level = futile.logger::WARN)
+ 
+GVA <- year_sector_data(GVA_by_sector_2016,
+                     log_level = futile.logger::TRACE)
+```
+
+This demonstrates a hierarchy of conditions, checks and messages that can be relayed to the user.
+
+This is an advanced topic, see here for the detail that inspired us.
+
+At the minimum use tryCatch() to catch problems in your code as demonstrated here. Add this to your function ensuring to change the warning and error messages on lines 71 and 76.
+
+# Lecture quality assurrance through defensive programming will provide you with a refresher on how to do the basics.
+
+## ......................................... ##
+Questions for this assignment
+Have you wrapped your function in tryCatch()? If not have you used the futile.logger package for condition handling?
+
+We opted for futile.logger  for initiating the class and checking the data, we use tryCatch  for the other functions. futile.logger  has a good tutorial on the README.
+## ......................................... ##
+
+# devtools::install_github("leilayousefi/DataTidying")
+# devtools::install_github("leilayousefi/DataTidying@v1.0.0")
+# devtools::install_github("klutometis/roxygen")
+# devtools::install_github(c("rstudio/httpuv", "rstudio/shiny"))
+# devtools::install_github("hadley/httr@v0.4")
+# devtools::install_github("mammykins/regregrap@v1.0.0")
+
+# devtools::install_github("leilayousefi/DataTidying@v1.0.0")
+
+```{r}
+devtools::install_github("leilayousefi/DataTidying@v1.0.0")
+```
+
+## Github -> realease -> new realease -> name: 1.0.0
+## ......................................... ##
+
+##    Docker for reproducibility   ##
+Based on feedback I added a lecture on using Docker to ensure a reproducible computing environment for the production of your data product. This appears in Section 9 on Producing your report and includes an additional assignment. By the end of it you will have Docker installed and used a rocker container to produce your data product.
+# Download and install Docker and start with hello world program
+
+# docker run hello world
+# docker run rucker/verse:3.5.0
+# docker run -d -p 8787:8787 rocker/verse:3.5.0
+
+localhost:8787
+## ......................................... ##
+
+https://rdrr.io/github/DCMSstats/eegva/src/R/extract_sic91.R
+
+https://ukgovdatascience.github.io/rap_companion/
+
+https://www.udemy.com/reproducible-analytical-pipelines/
+
+# some free data science courses, with basic R programming included
+https://medium.freecodecamp.org/the-best-data-science-courses-on-the-internet-ranked-by-your-reviews-6dc5b910ea40
+
+# some programming 
+https://medium.freecodecamp.org/if-you-want-to-learn-data-science-start-with-one-of-these-programming-classes-fb694ffe780c
+
+# you can use swirl to teach and swirlify to assess learners
+http://swirlstats.com/
+
+# RAP is probably a bad name as the emphasis should be on sustainability rather than reproducibility
+https://software.ac.uk/blog/2018-05-21-why-government-needs-sustainable-software-too
+
+https://www.statisticsauthority.gov.uk/a-robot-by-any-name/
+
+## ......................................... ##
+
+
+
+
+## ......................................... ##
+##  Error Logging
+
+
+
+## ##################
 ## making untidy data tidy
 reorganize the values in your data set with the the spread() and gather() functions of the tidyr package.
 
