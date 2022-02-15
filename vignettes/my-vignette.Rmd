@@ -12,8 +12,8 @@ vignette: >
 ---
 
 ```{r setup, include = FALSE}
-install.packages("tufte")
-library(tufte)
+#install.packages("tufte")
+#library(tufte)
 
 knitr::opts_chunk$set(
   collapse = TRUE,
@@ -28,7 +28,7 @@ devtools::load_all(".")
 ```
 
 
-
+## Aiwaken Tidy Report
 Aiwaken is a limited private company in the UK.
 
 ### Software Sevelopment

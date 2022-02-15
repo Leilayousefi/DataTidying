@@ -17,7 +17,7 @@ The preview shows you a rendered HTML copy of the contents of the editor. Conseq
 
 # Loading required package: 
 install.packages("usethis")
-install.packages(c("devtools", "roxygen2", "testthat", "tidyverse", "knitr", "tidyr", "dplyr", "ggplot2", "stringr"))
+install.packages(c("devtools", "roxygen2", "testthat", "tidyverse", "knitr", "tidyr", "dplyr", "ggplot2", "stringr", "xltabr"))
 
 #devtools::install_github("tidyverse/forcats")
 devtools::install_github("garrettgman/DSR",force = TRUE)
@@ -32,7 +32,7 @@ library(dplyr)
 library(ggplot2)
 library(knitr)
 library(stringr)
-
+library(xltabr)
 # version of devtools?
 # packageVersion("devtools")
 # devtools::session_info()
@@ -1231,7 +1231,19 @@ install.packages("rmarkdown")
 # install pandoc
 
 
-```
+``` 
+
+# pandoc -o output.html input.txt
+To produce a PDF, specify an output file with a .pdf extension:
+# pandoc test.txt -o test.pdf
+
+Instead of an input file, an absolute URI may be given. In this case pandoc will fetch the content using HTTP:
+
+pandoc -f html -t markdown https://www.fsf.org
+It is possible to supply a custom User-Agent string or other header when requesting a document from a URL:
+
+pandoc -f html -t markdown --request-header User-Agent:"Mozilla/5.0" \
+  https://www.fsf.org
 
 This will:
 
@@ -1300,6 +1312,15 @@ https://rmarkdown.rstudio.com/html_document_format.html#advanced_customization
 # custom css
 https://rmarkdown.rstudio.com/html_document_format.html#custom_css
 ## ......................................... ##
+## Create website using Travis_CI
+https://sahirbhatnagar.com/blog/2020/03/03/creating-a-website-for-your-r-package/
+
+https://github.com/moj-analytical-services/user-guidance
+
+https://tdt-documentation.london.cloudapps.digital/
+
+## AI Decision Tool 
+https://github.com/mammykins/Goldilocks-decision-tool
 
 https://bookdown.org/yihui/rmarkdown/html-document.html#advanced_customization
 
@@ -1382,17 +1403,24 @@ https://www.docker.com/what-docker
 https://www.docker.com/community-edition
 # or use brew
 # in terminal
-# brew install --cask docker 
+# brew install --cask docker virtualbox
 # docker --version
-$ brew install docker docker-machine
-$ brew cask install virtualbox
+
+brew install --cask docker virtualbox 
 -> need password
 -> possibly need to address System Preference setting
-$ docker-machine create --driver virtualbox default
-$ docker-machine env default
-$ eval "$(docker-machine env default)"
-$ docker run hello-world
-$ docker-machine stop default
+brew install docker-machine
+docker-machine create --driver virtualbox default
+docker-machine restart
+eval "$(docker-machine env default)" # This might throw an TSI connection error. In that case run docker-machine regenerate-certs default
+(docker-machine restart) # maybe needed
+docker run hello-world
+
+## ################
+open --background -a Docker
+docker run -d -p 80:80 docker/getting-started
+
+## ################
 # in your terminal execute the following uncommented code
 # once installed pull an image
 docker pull hello-world
@@ -1401,7 +1429,8 @@ docker pull hello-world
 # read the output for details
 docker run hello-world
 
-# docker run hello world
+$ docker-machine stop default
+
 # docker run rucker/verse:3.5.0
 # docker run -d -p 8787:8787 rocker/verse:3.5.0
 
@@ -1451,6 +1480,7 @@ library(rmarkdown)
 ```
 
 
+
 ## Copy Vignette Rmd content and paste into the Rstadio new document rmarkdown (in the browser  (http://localhost:8787))
 
 # knit (cmd+shift+k)
@@ -1461,7 +1491,6 @@ https://github.com/DCMSstats/eesectorsdocker
 # liftr approach might be useful
 https://cran.r-project.org/web/packages/liftr/vignettes/liftr-intro.html
 ## ......................................... ##
-
 
 
 
