@@ -17,7 +17,7 @@ The preview shows you a rendered HTML copy of the contents of the editor. Conseq
 
 # Loading required package: 
 install.packages("usethis")
-install.packages(c("devtools", "roxygen2", "testthat", "knitr", "tidyr", "dplyr", "ggplot2"))
+install.packages(c("devtools", "roxygen2", "testthat", "tidyverse", "knitr", "tidyr", "dplyr", "ggplot2", "stringr", "xltabr"))
 
 #devtools::install_github("tidyverse/forcats")
 devtools::install_github("garrettgman/DSR",force = TRUE)
@@ -25,9 +25,14 @@ library(usethis)
 library(devtools)
 library(roxygen2)
 library(testthat)
+library(tidyverse)
 library(tidyr)
 library(DSR)
-
+library(dplyr)
+library(ggplot2)
+library(knitr)
+library(stringr)
+library(xltabr)
 # version of devtools?
 # packageVersion("devtools")
 # devtools::session_info()
@@ -36,6 +41,8 @@ library(DSR)
 ```
 
 ## ----------------------------------------------- ##
+##   Package Development Prerequisites  ##
+https://support.rstudio.com/hc/en-us/articles/200486498-Package-Development-Prerequisites?_ga=2.234745885.203624782.1644777422-446760655.1643130254
 
 
 ```{r}
@@ -47,6 +54,8 @@ devtools::create("/Users/leilayousefi/LeilaDocuments/git/MoJ/TidyData/DataTidyin
 
 ## ----------------------------------------------- ##
 ```{r}
+getwd()
+
 #' GOV.UK register register.
 #'
 #' A dataset containing the characteristics of all
@@ -73,6 +82,10 @@ devtools::create("/Users/leilayousefi/LeilaDocuments/git/MoJ/TidyData/DataTidyin
 
 ## Git Repo
 cd DataTidying 
+
+# Check where were you to start from the previous steps
+git log --oneline 
+
 git status 
 git add . -n
 git add .
@@ -233,7 +246,7 @@ squashed your commits and pushed to Github and created a pull request for your R
 
 
 ```{r}
-devtools::check()
+#devtools::check()
 regreg <- read.csv('./data-raw/register.csv', header = TRUE)
 
 #regreg <- readr::read_csv("./data-raw/register.csv")
@@ -298,7 +311,7 @@ devtools::load_all(".")
 devtools::document(roclets = c('rd', 'collate', 'namespace'))
 
 ?regreg 
-
+rm(list = c("figure_2"))
 ```
 
 ## ---------------------------------------------- ##
@@ -316,7 +329,8 @@ and place it in R folder
 
 phase_date_data.R:
 ```{r}
-#' @title minimal tidy data set for regregrap report production.
+devtools::load_all()
+#' @title minimal tidy data set for DataTidying report production.
 #'
 #' @description \code{year_phase_data} is the class used for the creation of all
 #'  figures and tables in the made up RAP report (it's a demo for the RAP MOOC).
@@ -345,7 +359,7 @@ phase_date_data.R:
 #'
 #' @examples
 #'
-#' library(regregrap)
+#' library(DataTidying)
 #'
 #' df <- phase_date_data(regreg)
 #'
@@ -490,7 +504,7 @@ phase_date_data <- function(x, log_level = futile.logger::WARN,
       yq = zoo::as.yearqtr(x$date, format = "%Y-%m-%d")
     ),
     class = "phase_date_data")
-  }
+}
 
 ```
 
@@ -519,6 +533,7 @@ x <- DataTidying::phase_date_data(regreg, eda = TRUE)
 
 class(x)
 
+figure_2 <- DataTidying::figure_2
 
 ```
 
@@ -547,6 +562,7 @@ fivereg_recent inside fivreg_recent.R file created in R folder
 #Added fivreg_recent.R :
 
 ```{r}
+devtools::load_all()
 #' @title The five most recent published registers.
 #'
 #' @description The \code{fivereg_recent} function expects the
@@ -564,7 +580,7 @@ fivereg_recent inside fivreg_recent.R file created in R folder
 #'
 #' @examples
 #'
-#' library(regregrap)
+#' library(DataTidying)
 #' report_data <- phase_date_data(regreg)
 #' fivereg_recent(report_data)
 #'
@@ -697,11 +713,6 @@ https://stackoverflow.com/questions/67299/is-unit-testing-worth-the-effort?rq=1
 # Or the development version from GitHub:
 # install.packages("devtools")
 
-```{r}
-#devtools::install_github("r-lib/testthat”)
-install.packages("testthat")
-```
-
 #set up your package to use testthat
 ```{r}
 usethis::use_testthat()
@@ -716,7 +727,7 @@ https://github.com/DCMSstats/eesectors/blob/master/tests/testthat/test_year_sect
 library(testthat)
 library(dplyr)
 
-test_check("DataTidying")
+#test_check("DataTidying")
 ```
 
 
@@ -763,9 +774,12 @@ Step2: wite Tests (testthat)
 # test_fivereg_recent.R
 
 ```{r}
+devtools::load_all(".")
+devtools::document(roclets = c('rd', 'collate', 'namespace'))
+
 context("fivereg_recent works as intended")
 
-x <- phase_date_data(regreg)
+x <- DataTidying::phase_date_data(regreg)
 
 mtcars_df_slot <- mtcars
 mtcars_df_slot$df <- mtcars
@@ -784,7 +798,7 @@ test_that(
 )
 
 #
-devtools::test()
+#devtools::test()
 #
 
 test_that("fivereg_recent errors if input is not suitable dataframe", {
@@ -794,13 +808,12 @@ test_that("fivereg_recent errors if input is not suitable dataframe", {
 })
 
 #
-devtools::test()
+#devtools::test()
 #
 
 
 test_that("fivereg_recent equals manual sorting", {
   expect_equal(fivereg_recent(x), manual_fivereg)
-
 })
 
 test_that("fivereg_recent with n; correct number of commas", {
@@ -812,7 +825,7 @@ test_that("fivereg_recent with n; correct number of commas", {
 })
 
 #
-devtools::test()
+#devtools::test()
 #
 
 
@@ -822,12 +835,23 @@ devtools::test()
 cmd + shift + t:
 
 ```{r}
+#testthat::test_dir("/Users/leilayousefi/LeilaDocuments/git/MoJ/TidyData/DataTidying/tests/testthat/")
 
-test_check("DataTidying")
+#testthat::test_check("DataTidying")
 
-devtools::test()
+#devtools::test()
 
 ```
+
+#tdd wikipedia
+https://en.wikipedia.org/wiki/Test-driven_development
+
+#what’s the difference between unit testing and ttd?
+https://www.youtube.com/watch?v=QCif_-r8eK4
+
+#code, from rap repo
+https://github.com/mammykins/regregrap
+
 
 ## Test Driven Development:
 Step1: write Tests (testthat)
@@ -848,7 +872,31 @@ test_that("figure_2 outputs a gg, ggplot class", {
   expect_equal(class(figure_2(x)), c("gg", "ggplot"))
 
 })
-devtools::test()
+# #   devtools::test()
+```
+
+## .............................................. ##
+
+# code
+```{r}
+report_data <- DataTidying::phase_date_data(regreg)
+  
+  
+  x$df$id <- as.numeric(row.names(x$df))
+  
+  x$df
+  
+  p <- ggplot2::ggplot(x$df, ggplot2::aes(x=date, y = rev(id))) +
+        ggplot2::geom_line() +
+        ggplot2::xlab("Date published") +
+        ggplot2::ylab("Total register published")
+#return(p)
+p
+
+
+# test
+expect_equal(class(figure_2(x)), c("gg", "ggplot"))
+
 ```
 
 Tests failed ==>
@@ -865,7 +913,7 @@ Tests failed ==>
 #'
 #' @examples
 #'
-#' library(regregrap)
+#' library(DataTidying)
 #' report_data <- phase_date_data(regreg)
 #' figure_2(report_data)
 #'
@@ -888,43 +936,602 @@ figure_2 <- function(x) {
 devtools::load_all(".")
 ```
 
+## .............................................. ##
+## on Code editor:
+git checkout -b feature/test
+git status   
+git add .  
+git commit -m "feature/test Added fivereg_recent R code"
+git push origin feature/test -u
+git pull
+
+
+## .............................................. ##
+#visual tests for ggplot objectsr
+https://github.com/lionel-/vdiffr
+
+#visualTest
+https://stackoverflow.com/questions/30246789/how-to-test-graphical-output-of-functions
+
+#attempted move from visualTest to vdiffr for eesectors, build failure issue
+#to do with FreeType issue described in the readme for vdiffr repo
+# however, visualTest wasn’t failing when it should of been (detected with TDD)
+https://github.com/DCMSstats/eesectors/commits/fix/47
+
+
+## .............................................. ##
+
+
+## Automated Testing:
+
+The workflow for checking a package is simple, but tedious:
+
+# 1. Run devtools::check(), or press Ctrl/Cmd + Shift + E:
+
+```{r}
+devtools::check()
+```
+
+# 2. Fix the first problem.
+
+# 2.1 Create an issue in Github:
+name of issue: 
+Package check fails - Automated testing with R cmd check
+
+# 2.2 read the errors:
+e.g, package dependency ==> after reading DESCRIPTION file in R studio
+
+# 2.3 search for the "DESCRIPTION" on: http://r-pkgs.had.co.nz/check.html and (cmd + F (DESCRIPTION))
+
+# 2.4 OR writing r extension:
+https://cran.r-project.org/doc/manuals/r-release/R-exts.html#The-DESCRIPTION-file   and  (cmd + F (DESCRIPTION))
+
+# 2.5 OR in eesctors package in github
+
+# 2.6 go find a reliable description file and copy it as appropriate
+
+#2.6.1 on Depends section in the DESCRIPTION file add the dependent package e.g dplyr 
+
+e.g. dplyr error so add "dplyr (>= 0.6.1)" to Depends in Description file
+
+#Depends: R (>= 3.4.1), dplyr (>= 0.6.1)
+
+#2.6.2 
+Suggests: testthat
+-> go to the packages and check the version of packages and add it
+#Suggests: testthat(>= 1.0.2)
+
+#2.6.3 
+another warning about licence and go to eesectors and copy the licence to fix warning 
+# License: GPL-3
+
+Namespaces accessed by the ‘::’ and ‘:::’ operators must be listed here, or in ‘Suggests’ or ‘Enhances’
+
+#Imports: futile.logger (>= 1.4.3), ggplot2 (>=2.2.1), lubridate (), tibble (), zoo ()
+
+# 2.7 Run devtools::check(), or press Ctrl/Cmd + Shift + E:
+
+```{r}
+devtools::check()
+```
+
+# find inspiration from other packages
+# e.g. Description file
+https://github.com/DCMSstats/eesectors
+
+## ..................................... ##
+# on Code editor:
+git checkout -b feature/test
+git status   
+git add .  
+git commit -m "feature/test Added fivereg_recent R code"
+git push origin feature/test -u
+git pull   
 
 ## ......................................... ##
-#tdd wikipedia
-https://en.wikipedia.org/wiki/Test-driven_development
 
-#what’s the difference between unit testing and ttd?
-https://www.youtube.com/watch?v=QCif_-r8eK4
 
-#code, from rap repo
+Repeat until there are no more problems.
+
+R CMD check returns three types of messages:
+
+ERRORs: Severe problems that you should fix regardless of whether or not you’re submitting to CRAN.
+
+WARNINGs: Likely problems that you must fix if you’re planning to submit to CRAN (and a good idea to look into even if you’re not).
+
+NOTEs: Mild problems. If you are submitting to CRAN, you should strive to eliminate all NOTEs, even if they are false positives. If you have no NOTEs, human intervention is not required, and the package submission process will be easier. If it’s not possible to eliminate a NOTE, you’ll need describe why it’s OK in your submission comments, as described in release notes. If you’re not submitting to CRAN, carefully read each NOTE, but don’t go out of your way to fix things that you don’t think are problems.
+
+
+
+## ......................................... ##
+
+
+
+
+## ......................................... ##
+##   Continuous Integration (CI) with Travis
+
+## checking after every commit with Travis 
+
+CI check the command after every commit followed by push
+
+# Badges and Tags in Github:
+
+## install dependencies for MacOS
+
+# Terminal ==>
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+# ==> Next steps:
+- Run brew help to get started
+- Further documentation:
+    https://docs.brew.sh
+    
+#brew update
+#brew install travis
+
+# install Xcode 13.3 Beta 2 Release Notes
+
+Xcode 13.3 Beta 2 Release Notes
+
+
+
+
+install.packages("remotes")
+library(remotes)
+install.packages("gitcreds")
+library(gitcreds)
+
+```{r}
+install.packages("tidyverse") 
+library(tidyverse)
+
+devtools::check(remote = TRUE, manual = TRUE)
+
+devtools::load_all(".")
+devtools::document(roclets = c('rd', 'collate', 'namespace'))
+devtools::install_deps(dependencies = TRUE)
+check(force_suggests = FALSE)
+
+#devtools::use_travis()
+usethis::use_travis()
+```
+
+```{r message=TRUE, warning=TRUE, paged.print=TRUE}
+usethis::use_travis()
+```
+
+## On code editor (visual studio code)
+git log --oneline
+git checkout -b feature/travis-ci
+git status
+git add .
+...
+git push feature/travis-ci -u
+## The above cmd is followed in gitgub by a pull request and merge
+...
+
+## ##################
+# sign up to travis
+https://travis-ci.org/
+
+#guide to travis
+https://docs.travis-ci.com/user/getting-started/
+
+# good blog on intro to travis
+# how to get it to pass, common problems
+https://juliasilge.com/blog/beginners-guide-to-travis/
+
+# hadley wickham, bottom of the page
+http://r-pkgs.had.co.nz/check.html
+
+# Windows build test with appveyor
+https://ci.appveyor.com/login
+
+# eesectors example
+https://github.com/DCMSstats/eesectors/blob/master/.travis.yml
+
+
+## ......................................... ##
+##  Extra Quality Assurrance
+
+## On code editor (visual studio code)
+git checkout -b feature/test_fail
+git status
+git add .
+...
+git push feature/test_fail -u
+## The above cmd is followed in gitgub by a pull request and merge
+...
+
+## ##################
+## On Github: Pull request
+then all checks failed!
+Thus, look at the problem 
+
+#rap companion
+https://ukgovdatascience.github.io/rap_companion/code-cover.html
+
+#regregrap travis sticker
 https://github.com/mammykins/regregrap
 
-# code
+## ##################
+## ##################
+## Use Travis-CI with Codcov (Code Coverage)
+
+#codecov
+https://codecov.io/
+
+# eesectors readme with codecov badges
+https://github.com/DCMSstats/eesectors/blob/master/README.md   
+
+## ......................................... ##
+
+
+
+## ......................................... ##
+##  Dependency Hell!
+
+
+## ##################
+# package dependencies in description 
+http://r-pkgs.had.co.nz/description.html
+
+# eesectors example
+https://github.com/DCMSstats/eesectors/blob/master/DESCRIPTION
+## ##################
+
+# packrat
+Set-up packrat for your package by following the guidance. Install packrat and then run it. 
+CAVEAT: It will take a long time to run the first time, don't panic.
+
+#packrat
+https://rstudio.github.io/packrat/
+
+https://rstudio.github.io/packrat/walkthrough.html
+https://rstudio.github.io/packrat/commands.html
+https://rstudio.github.io/packrat/rstudio.html
+https://rstudio.github.io/packrat/limitations.html
+https://rstudio.github.io/packrat/custom-repos.html
+
 ```{r}
-report_data <- DataTidying::phase_date_data(regreg)
-  
-  
-  x$df$id <- as.numeric(row.names(x$df))
-  
-  x$df
-  
-  p <- ggplot(x$df, aes(x=date, y = rev(id))) +
-        geom_line() +
-        xlab("Date published") +
-        ylab("Total register published")
-#return(p)
-p
+install.packages("devtools")
+devtools::install_github("rstudio/packrat")
+```
+# you should have something liek this in your repo
+https://github.com/mammykins/regregrap/tree/master/packrat
+
+## ......................................... ##
+##    Error Logging
+
+# when should one stop testing software?
+It can relate quality assurance as a bayesian problem, as in when is the evidence sufficient that my code is bug free or suitably quality assured that I dont need to add any more tests then whether formal 
 
 
-# test
-expect_equal(class(figure_2(x)), c("gg), "ggplot))
+## ......................................... ##
+##    vignette / Data product
+It is useful for updationg data and we could simply reproduce the vignette and its data would be updated appropriately.
 
+
+git checkout -b feature/vignette
+## On code editor (visual studio code)
+git log --oneline
+git checkout -b feature/vignette
+git status
+git add .
+...
+git push feature/vignette -u
+
+To create your first vignette, run:
+
+```{r}
+usethis::use_vignette("my-vignette")
+
+install.packages("rmarkdown")
+# install pandoc
+
+
+``` 
+
+# pandoc -o output.html input.txt
+To produce a PDF, specify an output file with a .pdf extension:
+# pandoc test.txt -o test.pdf
+
+Instead of an input file, an absolute URI may be given. In this case pandoc will fetch the content using HTTP:
+
+pandoc -f html -t markdown https://www.fsf.org
+It is possible to supply a custom User-Agent string or other header when requesting a document from a URL:
+
+pandoc -f html -t markdown --request-header User-Agent:"Mozilla/5.0" \
+  https://www.fsf.org
+
+This will:
+
+Create a vignettes/ directory.
+
+Add the necessary dependencies to DESCRIPTION (i.e. it adds knitr to the Suggests and VignetteBuilder fields).
+
+Draft a vignette, vignettes/my-vignette.Rmd.
+
+The draft vignette has been designed to remind you of the important parts of an R Markdown file. It serves as a useful reference when you’re creating a new vignette.
+
+Once you have this file, the workflow is straightforward:
+
+Modify the vignette.
+
+Press Ctrl/Cmd + Shift + K (or click ) to knit the vignette and preview the output.
+There are three important components to an R Markdown vignette:
+
+The initial metadata block.
+Markdown for formatting text.
+Knitr for intermingling text, code and results.
+These are described in the following sections.
+
+
+```{r}
+
+```
+
+# rap companion with links
+https://ukgovdatascience.github.io/rap_companion/pub.html
+
+# hadley wickham vignettes
+http://r-pkgs.had.co.nz/vignettes.html
+
+# prettify plots - gov format
+https://cran.r-project.org/web/packages/ggthemes/index.html
+
+# practice makes perfect, here’s a toy example which is useful if your new to RMarkdown
+https://github.com/moj-analytical-services/rmarkdown_training
+
+#see github repo
+https://github.com/ukgovdatascience/govstyle
+
+
+Follow Hadley Wickham's workflow to create a vignette with a suitable name. Create a minimal viable report and iterate as appropriate.
+
+Consider using other ready-made style templates or create your own custom css (ask around, your organisation probably already has one!).
+
+Questions for this assignment
+Have you produced your desired data product?
+
+How proud do you feel right now?
+
+# css style sheet, what is it?
+https://www.w3schools.com/html/html_css.asp
+
+# some nice templates
+https://blog.rstudio.com/2016/03/21/r-markdown-custom-formats/
+
+# ggplot themes
+https://cran.r-project.org/web/packages/ggthemes/vignettes/ggthemes.html
+
+# advanced customisation
+https://rmarkdown.rstudio.com/html_document_format.html#advanced_customization
+
+# custom css
+https://rmarkdown.rstudio.com/html_document_format.html#custom_css
+## ......................................... ##
+## Create website using Travis_CI
+https://sahirbhatnagar.com/blog/2020/03/03/creating-a-website-for-your-r-package/
+
+https://github.com/moj-analytical-services/user-guidance
+
+https://tdt-documentation.london.cloudapps.digital/
+
+## AI Decision Tool 
+https://github.com/mammykins/Goldilocks-decision-tool
+
+https://bookdown.org/yihui/rmarkdown/html-document.html#advanced_customization
+
+
+
+https://github.com/mammykins/regregrap
+
+# look at some of Hadley’s tests here (or use a package you are familiar with)
+https://github.com/tidyverse/stringr/tree/master/tests/testthat
+
+# review the rap companion
+https://ukgovdatascience.github.io/rap_companion/
+
+#anything you want to add from your RAP battle experience?
+https://github.com/ukgovdatascience/rap_companion
+## ......................................... ##
+
+## Ensuring Quakity inputs 
+
+# using the futile.logger package
+This allowed us to modify the checks output to the console based on the expertise and interest of the user. For example, a statistician might just want to know if it passed or failed, whereas the package maintainer might like to see all checks.
+
+For example in the eesectors package compare the output when running:
+
+```{r}
+library(eesectors)
+ 
+GVA <- year_sector_data(GVA_by_sector_2016,
+                     log_level = futile.logger::WARN)
+ 
+GVA <- year_sector_data(GVA_by_sector_2016,
+                     log_level = futile.logger::TRACE)
+```
+
+This demonstrates a hierarchy of conditions, checks and messages that can be relayed to the user.
+
+This is an advanced topic, see here for the detail that inspired us.
+
+At the minimum use tryCatch() to catch problems in your code as demonstrated here. Add this to your function ensuring to change the warning and error messages on lines 71 and 76.
+
+# Lecture quality assurrance through defensive programming will provide you with a refresher on how to do the basics.
+
+## ......................................... ##
+Questions for this assignment
+Have you wrapped your function in tryCatch()? If not have you used the futile.logger package for condition handling?
+
+We opted for futile.logger  for initiating the class and checking the data, we use tryCatch  for the other functions. futile.logger  has a good tutorial on the README.
+
+## Github -> realease -> new realease -> name: 1.0.0
+## ......................................... ##
+##   Versioning   ##
+
+
+$ git tag -a v1.4 -m "my version 1.4"
+$ git tag
+
+# Semantic Versioning
+https://semver.org/
+
+# add tags in git
+https://git-scm.com/book/en/v2/Git-Basics-Tagging
+
+# versions are based on git tags
+https://help.github.com/articles/creating-releases/
+
+## ......................................... ##
+
+##    Docker for reproducibility   ##
+Based on feedback I added a lecture on using Docker to ensure a reproducible computing environment for the production of your data product. This appears in Section 9 on Producing your report and includes an additional assignment. By the end of it you will have Docker installed and used a rocker container to produce your data product.
+# Download and install Docker and start with hello world program:
+
+https://medium.com/crowdbotics/a-complete-one-by-one-guide-to-install-docker-on-your-mac-os-using-homebrew-e818eb4cfc3
+
+
+
+# Docker
+https://www.docker.com/what-docker
+
+# get docker
+https://www.docker.com/community-edition
+# or use brew
+# in terminal
+# brew install --cask docker virtualbox
+# docker --version
+
+brew install --cask docker virtualbox 
+-> need password
+-> possibly need to address System Preference setting
+brew install docker-machine
+docker-machine create --driver virtualbox default
+docker-machine restart
+eval "$(docker-machine env default)" # This might throw an TSI connection error. In that case run docker-machine regenerate-certs default
+(docker-machine restart) # maybe needed
+docker run hello-world
+
+## ################
+open --background -a Docker
+docker run -d -p 80:80 docker/getting-started
+
+## ################
+# in your terminal execute the following uncommented code
+# once installed pull an image
+docker pull hello-world
+
+# create container to run hello-world
+# read the output for details
+docker run hello-world
+
+$ docker-machine stop default
+
+# docker run rucker/verse:3.5.0
+# docker run -d -p 8787:8787 rocker/verse:3.5.0
+
+## ......................................... ##
+##   rockerverse
+
+Data:Code:Environment
+
+To reproduce the computing environment
+# Rocker for docker
+https://hub.docker.com/r/rocker/
+# rocker paper
+https://arxiv.org/abs/1710.03675
+
+#start docker, may take a while first time, specify a version to fix the computing environment in time
+# if you dont, it will run the latest docekr image
+
+docker run -d -p 8787:8787 rocker/verse
+
+browser  (http://localhost:8787)
+
+## In the browser in console of rstadio type in the following:
+
+# devtools::install_github("klutometis/roxygen")
+# devtools::install_github(c("rstudio/httpuv", "rstudio/shiny"))
+# devtools::install_github("hadley/httr@v0.4")
+# devtools::install_github("mammykins/regregrap@v1.0.0")
+
+# devtools::install_github("Leilayousefi/DataTidying@v1.0.0")
+
+```{r setup}
+knitr::opts_chunk$set(warning = TRUE, message = TRUE)
+devtools::install_github("klutometis/roxygen")
+devtools::install_github(c("rstudio/httpuv", "rstudio/shiny"))
+devtools::install_github("hadley/httr@v0.4")
+devtools::install_github("mammykins/regregrap")
+devtools::install_github("Leilayousefi/DataTidying")
+install.packages("rmarkdown")
+# install pandoc
+library(DataTidying)
+#library(klutometis/roxygen)
+library(httr)
+library(regregrap)
+library(httpuv)
+library(shiny)
+library(rmarkdown)
 ```
 
 
 
+## Copy Vignette Rmd content and paste into the Rstadio new document rmarkdown (in the browser  (http://localhost:8787))
+
+# knit (cmd+shift+k)
+
+# A dockerfile example from eesectors package
+https://github.com/DCMSstats/eesectorsdocker
+
+# liftr approach might be useful
+https://cran.r-project.org/web/packages/liftr/vignettes/liftr-intro.html
+## ......................................... ##
+
+
+
+
+
 
 ## ......................................... ##
+## ......................................... ##
+
+
+https://rdrr.io/github/DCMSstats/eegva/src/R/extract_sic91.R
+
+https://ukgovdatascience.github.io/rap_companion/
+
+https://www.udemy.com/reproducible-analytical-pipelines/
+
+# some free data science courses, with basic R programming included
+https://medium.freecodecamp.org/the-best-data-science-courses-on-the-internet-ranked-by-your-reviews-6dc5b910ea40
+
+# some programming 
+https://medium.freecodecamp.org/if-you-want-to-learn-data-science-start-with-one-of-these-programming-classes-fb694ffe780c
+
+# you can use swirl to teach and swirlify to assess learners
+http://swirlstats.com/
+
+# RAP is probably a bad name as the emphasis should be on sustainability rather than reproducibility
+https://software.ac.uk/blog/2018-05-21-why-government-needs-sustainable-software-too
+
+https://www.statisticsauthority.gov.uk/a-robot-by-any-name/
+
+## ......................................... ##
+
+
+
+
+## ......................................... ##
+##  Error Logging
+
+
+
+## ##################
 ## making untidy data tidy
 reorganize the values in your data set with the the spread() and gather() functions of the tidyr package.
 

@@ -1,4 +1,4 @@
-#' @title Figure 2 of the regreg RAP report.
+#' @title Figure 2 of the DataTidying RAP report.
 #'
 #' @description The function returns the time series ggplot2 object geom_line.
 #'
@@ -8,7 +8,7 @@
 #'
 #' @examples
 #'
-#' library(regregrap)
+#' library(DataTidying)
 #' report_data <- phase_date_data(regreg)
 #' figure_2(report_data)
 #'

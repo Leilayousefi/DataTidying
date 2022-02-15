@@ -1,0 +1,36 @@
+---
+title: "Tidy Report"
+author: "Leila Yousefi"
+date: "`r Sys.Date()`"
+output: 
+  tufte::tufte_html: default
+  tufte::tufte_handout: default
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+#install.packages("tufte")
+#library(tufte)
+
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+
+library(DataTidying)
+```
+
+```{r}
+devtools::load_all(".")
+```
+
+
+## Aiwaken Tidy Report
+Aiwaken is a limited private company in the UK.
+
+### Software Sevelopment
+
+Reproducible Codes

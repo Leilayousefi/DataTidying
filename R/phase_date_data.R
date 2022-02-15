@@ -172,4 +172,4 @@ phase_date_data <- function(x, log_level = futile.logger::WARN,
       yq = zoo::as.yearqtr(x$date, format = "%Y-%m-%d")
     ),
     class = "phase_date_data")
-  }
+}
