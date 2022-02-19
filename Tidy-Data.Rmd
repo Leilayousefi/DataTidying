@@ -1287,6 +1287,11 @@ https://github.com/moj-analytical-services/rmarkdown_training
 #see github repo
 https://github.com/ukgovdatascience/govstyle
 
+# liftr 
+liftr aims to solve the problem of persistent reproducible reporting. To achieve this goal, it extends the R Markdown metadata format, and uses Docker to containerize and render R Markdown documents.
+https://cran.r-project.org/web/packages/liftr/vignettes/liftr-intro.html
+
+
 
 Follow Hadley Wickham's workflow to create a vignette with a suitable name. Create a minimal viable report and iterate as appropriate.
 
@@ -1313,6 +1318,8 @@ https://rmarkdown.rstudio.com/html_document_format.html#advanced_customization
 https://rmarkdown.rstudio.com/html_document_format.html#custom_css
 ## ......................................... ##
 ## Create website using Travis_CI
+Creating a website for your R package
+
 https://sahirbhatnagar.com/blog/2020/03/03/creating-a-website-for-your-r-package/
 
 https://github.com/moj-analytical-services/user-guidance
@@ -1478,7 +1485,7 @@ library(httpuv)
 library(shiny)
 library(rmarkdown)
 ```
-
+https://machinegurning.com/rstats/latex-phd/
 
 
 ## Copy Vignette Rmd content and paste into the Rstadio new document rmarkdown (in the browser  (http://localhost:8787))
@@ -1491,17 +1498,78 @@ https://github.com/DCMSstats/eesectorsdocker
 # liftr approach might be useful
 https://cran.r-project.org/web/packages/liftr/vignettes/liftr-intro.html
 ## ......................................... ##
+https://daringfireball.net/projects/markdown/syntax
 
-
-
-
-
-
-## ......................................... ##
-## ......................................... ##
 
 
 https://rdrr.io/github/DCMSstats/eegva/src/R/extract_sic91.R
+
+## ......................................... ##
+#' @export
+sum_gva_by_subsector <- function(combined_gva,
+                              gva,
+                              subsector) {
+
+  check_class(combined_gva, "combined_gva")
+  check_class(gva, "gva")
+
+  gva_by_subsector <- combined_gva %>%
+
+    # initial summary by sub_sector
+    dplyr::filter(sector == subsector) %>%
+    dplyr::group_by(year, sub_sector_categories) %>%
+    dplyr::summarise(gva = sum(gva)) %>%
+    dplyr::ungroup() %>%
+
+    # append total sector GVA by year
+    dplyr::bind_rows(
+      combined_gva %>%
+        dplyr::filter(sector == subsector) %>%
+        dplyr::group_by(year) %>%
+        dplyr::summarise(gva = sum(gva)) %>%
+        dplyr::mutate(sub_sector_categories =
+                 paste0(toupper(substr(subsector, 1, 1)),
+                        substr(subsector, 2, nchar(subsector)))) %>%
+        dplyr::select(year, sub_sector_categories, gva)
+    ) %>%
+
+    #append total UK GVA by year
+    dplyr::bind_rows(
+      dplyr::filter(gva, sic == "year_total") %>%
+        dplyr::mutate(sub_sector_categories = "UK") %>%
+        dplyr::select(year, sub_sector_categories, gva = gva_2digit)
+    ) %>%
+
+    #final clean up
+    dplyr::filter(year %in% 2010:max(attr(combined_gva, "years"))) %>%
+    #mutate(year = as.integer(year)) %>%
+    dplyr::select(sub_sector_categories, year, gva) %>%
+    dplyr::arrange(year, sub_sector_categories) %>%
+    data.frame()
+
+
+
+  # validation
+  cols = rbind(
+    data.frame(),
+    list("sub_sector_categories", "character"),
+    list("year", "integer"),
+    list("gva", "numeric"),
+    stringsAsFactors = FALSE
+  )
+  names(cols) <- c("name", "type")
+
+  validate(
+    gva_by_subsector,
+    cols = cols,
+    class_name = "gva_by_subsector"
+  )
+
+}
+## ......................................... ##
+
+
+
 
 https://ukgovdatascience.github.io/rap_companion/
 
@@ -1523,8 +1591,8 @@ https://www.statisticsauthority.gov.uk/a-robot-by-any-name/
 
 ## ......................................... ##
 
-
-
+##     MoJ Analytical Platform
+https://user-guidance.services.alpha.mojanalytics.xyz/#moj-analytical-platform
 
 ## ......................................... ##
 ##  Error Logging
